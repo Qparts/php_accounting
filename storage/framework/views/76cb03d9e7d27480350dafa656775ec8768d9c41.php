@@ -176,272 +176,269 @@
 
                     <!--------------------- Start HRM ----------------------------------->
 
-                    <?php if(\Auth::user()->show_hrm() == 1): ?>
-                        <?php if( Gate::check('manage employee') || Gate::check('manage setsalary')): ?>
-                            <li class="dash-item dash-hasmenu <?php echo e((Request::segment(1) == 'holiday-calender'
-                        || Request::segment(1) == 'leavetype' || Request::segment(1) == 'leave' ||
-                                Request::segment(1) == 'attendanceemployee' || Request::segment(1) == 'document-upload' || Request::segment(1) == 'document' || Request::segment(1) == 'performanceType'  ||
-                                    Request::segment(1) == 'branch' || Request::segment(1) == 'department' || Request::segment(1) == 'designation' || Request::segment(1) == 'employee'
-                                    || Request::segment(1) == 'leave_requests' || Request::segment(1) == 'holidays' || Request::segment(1) == 'policies' || Request::segment(1) == 'leave_calender'
-                                    || Request::segment(1) == 'award' || Request::segment(1) == 'transfer' || Request::segment(1) == 'resignation' || Request::segment(1) == 'training' || Request::segment(1) == 'travel' ||
-                                    Request::segment(1) == 'promotion' || Request::segment(1) == 'complaint' || Request::segment(1) == 'warning'
-                                     || Request::segment(1) == 'termination' || Request::segment(1) == 'announcement' || Request::segment(1) == 'job' || Request::segment(1) == 'job-application' ||
-                                      Request::segment(1) == 'candidates-job-applications' || Request::segment(1) == 'job-onboard' || Request::segment(1) == 'custom-question'
-                                       || Request::segment(1) == 'interview-schedule' || Request::segment(1) == 'career' || Request::segment(1) == 'holiday' || Request::segment(1) == 'setsalary' ||
-                                       Request::segment(1) == 'payslip' || Request::segment(1) == 'paysliptype' || Request::segment(1) == 'company-policy' || Request::segment(1) == 'job-stage'
-                                       || Request::segment(1) == 'job-category' || Request::segment(1) == 'terminationtype' || Request::segment(1) == 'awardtype' || Request::segment(1) == 'trainingtype' ||
-                                       Request::segment(1) == 'goaltype' || Request::segment(1) == 'paysliptype' || Request::segment(1) == 'allowanceoption' || Request::segment(1) == 'competencies' || Request::segment(1) == 'loanoption'
-                                       || Request::segment(1) == 'deductionoption')?'active dash-trigger':''); ?>">
-                                <a href="#!" class="dash-link "><span class="dash-micon"><i class="ti ti-user"></i></span><span class="dash-mtext"><?php echo e(__('HRM System')); ?></span><span class="dash-arrow">
-                                        <i data-feather="chevron-right"></i></span>
-                                </a>
-                                <ul class="dash-submenu">
-                                    <li class="dash-item  <?php echo e((Request::segment(1) == 'employee' ? 'active dash-trigger' : '')); ?>   ">
-                                        <?php if(\Auth::user()->type =='Employee'): ?>
-                                            <?php
-                                                $employee=App\Models\Employee::where('user_id',\Auth::user()->id)->first();
-                                            ?>
-                                            <a class="dash-link" href="<?php echo e(route('employee.show',\Illuminate\Support\Facades\Crypt::encrypt($employee->id))); ?>"><?php echo e(__('Employee')); ?></a>
-                                        <?php else: ?>
-                                            <a href="<?php echo e(route('employee.index')); ?>" class="dash-link">
-                                                <?php echo e(__('Employee Setup')); ?>
-
-                                            </a>
-                                        <?php endif; ?>
-                                    </li>
-
-                                    <?php if( Gate::check('manage set salary') || Gate::check('manage pay slip')): ?>
-                                        <li class="dash-item dash-hasmenu  <?php echo e((Request::segment(1) == 'setsalary' || Request::segment(1) == 'payslip') ? 'active dash-trigger' : ''); ?>">
-                                        <a class="dash-link" href="#"><?php echo e(__('Payroll Setup')); ?><span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
-                                        <ul class="dash-submenu">
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage set salary')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('setsalary*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('setsalary.index')); ?>"><?php echo e(__('Set salary')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage pay slip')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('payslip*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('payslip.index')); ?>"><?php echo e(__('Payslip')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                        </ul>
-                                    </li>
-                                    <?php endif; ?>
-
-                                    <?php if( Gate::check('manage leave') || Gate::check('manage attendance')): ?>
-                                        <li class="dash-item dash-hasmenu  <?php echo e((Request::segment(1) == 'leave' || Request::segment(1) == 'attendanceemployee') ? 'active dash-trigger' :''); ?>">
-                                        <a class="dash-link" href="#"><?php echo e(__('Leave Management Setup')); ?><span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
-                                        <ul class="dash-submenu">
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage leave')): ?>
-                                                <li class="dash-item <?php echo e((Request::route()->getName() == 'leave.index') ?'active' :''); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('leave.index')); ?>"><?php echo e(__('Manage Leave')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage attendance')): ?>
-                                                <li class="dash-item dash-hasmenu <?php echo e((Request::segment(1) == 'attendanceemployee') ? 'active dash-trigger' : ''); ?>" href="#navbar-attendance" data-toggle="collapse" role="button" aria-expanded="<?php echo e((Request::segment(1) == 'attendanceemployee') ? 'true' : 'false'); ?>">
-                                                    <a class="dash-link" href="#"><?php echo e(__('Attendance')); ?><span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
-                                                    <ul class="dash-submenu">
-                                                        <li class="dash-item <?php echo e((Request::route()->getName() == 'attendanceemployee.index' ? 'active' : '')); ?>">
-                                                            <a class="dash-link" href="<?php echo e(route('attendanceemployee.index')); ?>"><?php echo e(__('Mark Attendance')); ?></a>
-                                                        </li>
-                                                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('create attendance')): ?>
-                                                            <li class="dash-item <?php echo e((Request::route()->getName() == 'attendanceemployee.bulkattendance' ? 'active' : '')); ?>">
-                                                                <a class="dash-link" href="<?php echo e(route('attendanceemployee.bulkattendance')); ?>"><?php echo e(__('Bulk Attendance')); ?></a>
-                                                            </li>
-                                                        <?php endif; ?>
-                                                    </ul>
-                                                </li>
-                                            <?php endif; ?>
-                                        </ul>
-                                    </li>
-                                    <?php endif; ?>
-
-                                    <?php if( Gate::check('manage indicator') || Gate::check('manage appraisal') || Gate::check('manage goal tracking')): ?>
-                                        <li class="dash-item dash-hasmenu <?php echo e((Request::segment(1) == 'indicator' || Request::segment(1) == 'appraisal' || Request::segment(1) == 'goaltracking') ? 'active dash-trigger' : ''); ?>" href="#navbar-performance" data-toggle="collapse" role="button" aria-expanded="<?php echo e((Request::segment(1) == 'indicator' || Request::segment(1) == 'appraisal' || Request::segment(1) == 'goaltracking') ? 'true' : 'false'); ?>">
-                                        <a class="dash-link" href="#"><?php echo e(__('Performance Setup')); ?><span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
-                                        <ul class="dash-submenu <?php echo e((Request::segment(1) == 'indicator' || Request::segment(1) == 'appraisal' || Request::segment(1) == 'goaltracking') ? 'show' : 'collapse'); ?>">
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage indicator')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('indicator*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('indicator.index')); ?>"><?php echo e(__('Indicator')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage appraisal')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('appraisal*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('appraisal.index')); ?>"><?php echo e(__('Appraisal')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage goal tracking')): ?>
-                                                <li class="dash-item  <?php echo e((request()->is('goaltracking*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('goaltracking.index')); ?>"><?php echo e(__('Goal Tracking')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                        </ul>
-                                    </li>
-                                    <?php endif; ?>
-
-                                    <?php if( Gate::check('manage training') || Gate::check('manage trainer') || Gate::check('show training')): ?>
-                                        <li class="dash-item dash-hasmenu <?php echo e((Request::segment(1) == 'trainer' || Request::segment(1) == 'training') ? 'active dash-trigger' : ''); ?>" href="#navbar-training" data-toggle="collapse" role="button" aria-expanded="<?php echo e((Request::segment(1) == 'trainer' || Request::segment(1) == 'training') ? 'true' : 'false'); ?>">
-                                        <a class="dash-link" href="#"><?php echo e(__('Training Setup')); ?><span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
-                                        <ul class="dash-submenu">
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage training')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('training*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('training.index')); ?>"><?php echo e(__('Training List')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage trainer')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('trainer*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('trainer.index')); ?>"><?php echo e(__('Trainer')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-
-                                        </ul>
-                                    </li>
-                                    <?php endif; ?>
-
-                                    <?php if( Gate::check('manage job') || Gate::check('create job') || Gate::check('manage job application') || Gate::check('manage custom question') || Gate::check('show interview schedule') || Gate::check('show career')): ?>
-                                        <li class="dash-item dash-hasmenu <?php echo e((Request::segment(1) == 'job' || Request::segment(1) == 'job-application' || Request::segment(1) == 'candidates-job-applications' || Request::segment(1) == 'job-onboard' || Request::segment(1) == 'custom-question' || Request::segment(1) == 'interview-schedule' || Request::segment(1) == 'career') ? 'active dash-trigger' : ''); ?>    ">
-                                        <a class="dash-link" href="#"><?php echo e(__('Recruitment Setup')); ?><span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
-                                        <ul class="dash-submenu">
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage job')): ?>
-                                                <li class="dash-item <?php echo e((Request::route()->getName() == 'job.index' || Request::route()->getName() == 'job.create' || Request::route()->getName() == 'job.edit' || Request::route()->getName() == 'job.show'   ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('job.index')); ?>"><?php echo e(__('Jobs')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('create job')): ?>
-                                                <li class="dash-item <?php echo e(( Request::route()->getName() == 'job.create' ? 'active' : '')); ?> ">
-                                                    <a class="dash-link" href="<?php echo e(route('job.create')); ?>"><?php echo e(__('Job Create')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage job application')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('job-application*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('job-application.index')); ?>"><?php echo e(__('Job Application')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage job application')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('candidates-job-applications') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('job.application.candidate')); ?>"><?php echo e(__('Job Candidate')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage job application')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('job-onboard*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('job.on.board')); ?>"><?php echo e(__('Job On-boarding')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage custom question')): ?>
-                                                <li class="dash-item  <?php echo e((request()->is('custom-question*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('custom-question.index')); ?>"><?php echo e(__('Custom Question')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('show interview schedule')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('interview-schedule*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('interview-schedule.index')); ?>"><?php echo e(__('Interview Schedule')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('show career')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('career*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('career',[\Auth::user()->creatorId(),$lang])); ?>"><?php echo e(__('Career')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                        </ul>
-                                    </li>
-                                    <?php endif; ?>
-
-                                    <?php if( Gate::check('manage award') || Gate::check('manage transfer') || Gate::check('manage resignation') || Gate::check('manage travel') || Gate::check('manage promotion') || Gate::check('manage complaint') || Gate::check('manage warning') || Gate::check('manage termination') || Gate::check('manage announcement') || Gate::check('manage holiday') ): ?>
-                                        <li class="dash-item dash-hasmenu <?php echo e((Request::segment(1) == 'holiday-calender' || Request::segment(1) == 'holiday' || Request::segment(1) == 'policies' || Request::segment(1) == 'award' || Request::segment(1) == 'transfer' || Request::segment(1) == 'resignation' || Request::segment(1) == 'travel' || Request::segment(1) == 'promotion' || Request::segment(1) == 'complaint' || Request::segment(1) == 'warning' || Request::segment(1) == 'termination' || Request::segment(1) == 'announcement' || Request::segment(1) == 'competencies' ) ? 'active dash-trigger' : ''); ?>">
-                                        <a class="dash-link" href="#"><?php echo e(__('HR Admin Setup')); ?><span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
-                                        <ul class="dash-submenu">
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage award')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('award*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('award.index')); ?>"><?php echo e(__('Award')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage transfer')): ?>
-                                                <li class="dash-item  <?php echo e((request()->is('transfer*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('transfer.index')); ?>"><?php echo e(__('Transfer')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage resignation')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('resignation*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('resignation.index')); ?>"><?php echo e(__('Resignation')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage travel')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('travel*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('travel.index')); ?>"><?php echo e(__('Trip')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage promotion')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('promotion*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('promotion.index')); ?>"><?php echo e(__('Promotion')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage complaint')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('complaint*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('complaint.index')); ?>"><?php echo e(__('Complaints')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage warning')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('warning*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('warning.index')); ?>"><?php echo e(__('Warning')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage termination')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('termination*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('termination.index')); ?>"><?php echo e(__('Termination')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage announcement')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('announcement*') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('announcement.index')); ?>"><?php echo e(__('Announcement')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage holiday')): ?>
-                                                <li class="dash-item <?php echo e((request()->is('holiday*') || request()->is('holiday-calender') ? 'active' : '')); ?>">
-                                                    <a class="dash-link" href="<?php echo e(route('holiday.index')); ?>"><?php echo e(__('Holidays')); ?></a>
-                                                </li>
-                                            <?php endif; ?>
-                                        </ul>
-                                    </li>
-                                    <?php endif; ?>
-
-                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage event')): ?>
-                                        <li class="dash-item <?php echo e((request()->is('event*') ? 'active' : '')); ?>">
-                                            <a class="dash-link" href="<?php echo e(route('event.index')); ?>"><?php echo e(__('Event Setup')); ?></a>
-                                        </li>
-                                    <?php endif; ?>
-                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage meeting')): ?>
-                                        <li class="dash-item <?php echo e((request()->is('meeting*') ? 'active' : '')); ?>">
-                                            <a class="dash-link" href="<?php echo e(route('meeting.index')); ?>"><?php echo e(__('Meeting')); ?></a>
-                                        </li>
-                                    <?php endif; ?>
-                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage assets')): ?>
-                                        <li class="dash-item <?php echo e((request()->is('account-assets*') ? 'active' : '')); ?>">
-                                            <a class="dash-link" href="<?php echo e(route('account-assets.index')); ?>"><?php echo e(__('Employees Asset Setup ')); ?></a>
-                                        </li>
-                                    <?php endif; ?>
-                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage document')): ?>
-                                        <li class="dash-item <?php echo e((request()->is('document-upload*') ? 'active' : '')); ?>">
-                                            <a class="dash-link" href="<?php echo e(route('document-upload.index')); ?>"><?php echo e(__('Document Setup')); ?></a>
-                                        </li>
-                                    <?php endif; ?>
-                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage company policy')): ?>
-                                        <li class="dash-item <?php echo e((request()->is('company-policy*') ? 'active' : '')); ?>">
-                                            <a class="dash-link" href="<?php echo e(route('company-policy.index')); ?>"><?php echo e(__('Company policy')); ?></a>
-                                        </li>
-                                    <?php endif; ?>
-
-                                    <li class="dash-item <?php echo e((Request::segment(1) == 'leavetype' || Request::segment(1) == 'document' || Request::segment(1) == 'performanceType' || Request::segment(1) == 'branch' || Request::segment(1) == 'department'
-                                                                    || Request::segment(1) == 'designation' || Request::segment(1) == 'job-stage'|| Request::segment(1) == 'performanceType'  || Request::segment(1) == 'job-category' || Request::segment(1) == 'terminationtype' ||
-                                                                Request::segment(1) == 'awardtype' || Request::segment(1) == 'trainingtype' || Request::segment(1) == 'goaltype' || Request::segment(1) == 'paysliptype' ||
-                                                                 Request::segment(1) == 'allowanceoption' || Request::segment(1) == 'loanoption' || Request::segment(1) == 'deductionoption') ? 'active dash-trigger' : ''); ?>">
-                                        <a class="dash-link" href="<?php echo e(route('branch.index')); ?>"><?php echo e(__('HRM System Setup')); ?></a>
-                                    </li>
 
 
-                                </ul>
-                            </li>
-                        <?php endif; ?>
-                    <?php endif; ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                     <!--------------------- End HRM ----------------------------------->
 
@@ -582,117 +579,117 @@
 
                     <!--------------------- Start CRM ----------------------------------->
 
-                    <?php if(\Auth::user()->show_crm() == 1): ?>
-                        <?php if( Gate::check('manage lead') || Gate::check('manage deal') || Gate::check('manage form builder')  || Gate::check('manage contract')): ?>
-                            <li class="dash-item dash-hasmenu
-                                        <?php echo e((Request::segment(1) == 'stages' || Request::segment(1) == 'labels' || Request::segment(1) == 'sources' ||
-                                            Request::segment(1) == 'lead_stages' || Request::segment(1) == 'pipelines' || Request::segment(1) == 'deals' ||
-                                            Request::segment(1) == 'leads'  || Request::segment(1) == 'form_builder' || Request::segment(1) == 'form_response' || Request::segment(1) == 'contract')?' active dash-trigger':''); ?>">
-                                <a href="#!" class="dash-link"><span class="dash-micon"><i class="ti ti-layers-difference"></i></span><span class="dash-mtext"><?php echo e(__('CRM System')); ?></span><span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
-                                <ul class="dash-submenu
-                                            <?php echo e((Request::segment(1) == 'stages' || Request::segment(1) == 'labels' || Request::segment(1) == 'sources' ||
-                                                Request::segment(1) == 'lead_stages' || Request::segment(1) == 'leads'  || Request::segment(1) == 'form_builder' ||
-                                                Request::segment(1) == 'form_response' || Request::segment(1) == 'deals' || Request::segment(1) == 'pipelines')?'show':''); ?>">
-                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage lead')): ?>
-                                        <li class="dash-item <?php echo e((Request::route()->getName() == 'leads.list' || Request::route()->getName() == 'leads.index' || Request::route()->getName() == 'leads.show') ? ' active' : ''); ?>">
-                                            <a class="dash-link" href="<?php echo e(route('leads.index')); ?>"><?php echo e(__('Leads')); ?></a>
-                                        </li>
-                                    <?php endif; ?>
-                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage deal')): ?>
-                                        <li class="dash-item <?php echo e((Request::route()->getName() == 'deals.list' || Request::route()->getName() == 'deals.index' || Request::route()->getName() == 'deals.show') ? ' active' : ''); ?>">
-                                            <a class="dash-link" href="<?php echo e(route('deals.index')); ?>"><?php echo e(__('Deals')); ?></a>
-                                        </li>
-                                    <?php endif; ?>
-                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage form builder')): ?>
-                                        <li class="dash-item <?php echo e((Request::segment(1) == 'form_builder' || Request::segment(1) == 'form_response')?'active open':''); ?>">
-                                            <a class="dash-link" href="<?php echo e(route('form_builder.index')); ?>"><?php echo e(__('Form Builder')); ?></a>
-                                        </li>
-                                    <?php endif; ?>
-                                    <?php if(\Auth::user()->type=='company'): ?>
-                                        <li class="dash-item  <?php echo e((Request::route()->getName() == 'contract.index' || Request::route()->getName() == 'contract.show')?'active':''); ?>">
-                                            <a class="dash-link" href="<?php echo e(route('contract.index')); ?>"><?php echo e(__('Contract')); ?></a>
-                                        </li>
-                                    <?php endif; ?>
-                                    <?php if(Gate::check('manage lead stage') || Gate::check('manage pipeline') ||Gate::check('manage source') ||Gate::check('manage label') || Gate::check('manage stage')): ?>
-                                        <li class="dash-item  <?php echo e((Request::segment(1) == 'stages' || Request::segment(1) == 'labels' || Request::segment(1) == 'sources' || Request::segment(1) == 'lead_stages' || Request::segment(1) == 'pipelines' || Request::segment(1) == 'product-category' || Request::segment(1) == 'product-unit' || Request::segment(1) == 'payment-method' || Request::segment(1) == 'custom-field' || Request::segment(1) == 'chart-of-account-type')? 'active dash-trigger' :''); ?>">
-                                            <a class="dash-link" href="<?php echo e(route('pipelines.index')); ?>   "><?php echo e(__('CRM System Setup')); ?></a>
 
-                                        </li>
-                                    <?php endif; ?>
-                                </ul></li>
-                        <?php endif; ?>
-                    <?php endif; ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                     <!--------------------- End CRM ----------------------------------->
 
                     <!--------------------- Start Project ----------------------------------->
 
-                    <?php if(\Auth::user()->show_project() == 1): ?>
-                        <?php if( Gate::check('manage project')): ?>
-                            <li class="dash-item dash-hasmenu
-                                            <?php echo e(( Request::segment(1) == 'project' || Request::segment(1) == 'bugs-report' || Request::segment(1) == 'bugstatus' ||
-                                                 Request::segment(1) == 'project-task-stages' || Request::segment(1) == 'calendar' || Request::segment(1) == 'timesheet-list' ||
-                                                 Request::segment(1) == 'taskboard' || Request::segment(1) == 'timesheet-list' || Request::segment(1) == 'taskboard' ||
-                                                 Request::segment(1) == 'project' || Request::segment(1) == 'projects' || Request::segment(1) == 'project_report') ? 'active dash-trigger' : ''); ?>">
-                                <a href="#!" class="dash-link"><span class="dash-micon"><i class="ti ti-share"></i></span><span class="dash-mtext"><?php echo e(__('Project System')); ?></span><span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
-                                <ul class="dash-submenu">
-                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage project')): ?>
-                                        <li class="dash-item  <?php echo e(Request::segment(1) == 'project' || Request::route()->getName() == 'projects.list' || Request::route()->getName() == 'projects.list' ||Request::route()->getName() == 'projects.index' || Request::route()->getName() == 'projects.show' || request()->is('projects/*') ? 'active' : ''); ?>">
-                                            <a class="dash-link" href="<?php echo e(route('projects.index')); ?>"><?php echo e(__('Projects')); ?></a>
-                                        </li>
-                                    <?php endif; ?>
-                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage project task')): ?>
-                                        <li class="dash-item <?php echo e((request()->is('taskboard*') ? 'active' : '')); ?>">
-                                            <a class="dash-link" href="<?php echo e(route('taskBoard.view', 'list')); ?>"><?php echo e(__('Tasks')); ?></a>
-                                        </li>
-                                    <?php endif; ?>
-                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage timesheet')): ?>
-                                        <li class="dash-item <?php echo e((request()->is('timesheet-list*') ? 'active' : '')); ?>">
-                                            <a class="dash-link" href="<?php echo e(route('timesheet.list')); ?>"><?php echo e(__('Timesheet')); ?></a>
-                                        </li>
-                                    <?php endif; ?>
-                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage bug report')): ?>
-                                        <li class="dash-item <?php echo e((request()->is('bugs-report*') ? 'active' : '')); ?>">
-                                            <a class="dash-link" href="<?php echo e(route('bugs.view','list')); ?>"><?php echo e(__('Bug')); ?></a>
-                                        </li>
-                                    <?php endif; ?>
-                                    <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage project task')): ?>
-                                        <li class="dash-item <?php echo e((request()->is('calendar*') ? 'active' : '')); ?>">
-                                            <a class="dash-link" href="<?php echo e(route('task.calendar',['all'])); ?>"><?php echo e(__('Task Calendar')); ?></a>
-                                        </li>
-                                    <?php endif; ?>
-                                    <?php if(\Auth::user()->type!='super admin'): ?>
-                                        <li class="dash-item  <?php echo e((Request::segment(1) == 'time-tracker')?'active open':''); ?>">
-                                            <a class="dash-link" href="<?php echo e(route('time.tracker')); ?>"><?php echo e(__('Tracker')); ?></a>
-                                        </li>
-                                    <?php endif; ?>
-                                    <?php if(\Auth::user()->type == 'company' || \Auth::user()->type == 'employee'): ?>
-                                         <li class="dash-item  <?php echo e((Request::route()->getName() == 'project_report.index' || Request::route()->getName() == 'project_report.show') ? 'active' : ''); ?>">
-                                             <a class="dash-link" href="<?php echo e(route('project_report.index')); ?>"><?php echo e(__('Project Report')); ?></a>
-                                         </li>
-                                    <?php endif; ?>
 
-                                    <?php if(Gate::check('manage project task stage') || Gate::check('manage bug status')): ?>
-                                        <li class="dash-item dash-hasmenu <?php echo e((Request::segment(1) == 'bugstatus' || Request::segment(1) == 'project-task-stages') ? 'active dash-trigger' : ''); ?>">
-                                            <a class="dash-link" href="#"><?php echo e(__('Project System Setup')); ?><span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
-                                            <ul class="dash-submenu">
-                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage project task stage')): ?>
-                                                    <li class="dash-item  <?php echo e((Request::route()->getName() == 'project-task-stages.index') ? 'active' : ''); ?>">
-                                                        <a class="dash-link" href="<?php echo e(route('project-task-stages.index')); ?>"><?php echo e(__('Project Task Stages')); ?></a>
-                                                    </li>
-                                                <?php endif; ?>
-                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage bug status')): ?>
-                                                    <li class="dash-item <?php echo e((Request::route()->getName() == 'bugstatus.index') ? 'active' : ''); ?>">
-                                                        <a class="dash-link" href="<?php echo e(route('bugstatus.index')); ?>"><?php echo e(__('Bug Status')); ?></a>
-                                                    </li>
-                                                <?php endif; ?>
-                                            </ul>
-                                        </li>
-                                    <?php endif; ?>
-                                </ul>
-                            </li>
-                        <?php endif; ?>
-                    <?php endif; ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                     <!--------------------- End Project ----------------------------------->
 
@@ -802,25 +799,26 @@
                     <?php endif; ?>
                     <!--------------------- End POs System ----------------------------------->
 
-                    <?php if(\Auth::user()->type!='super admin'): ?>
-                        <li class="dash-item dash-hasmenu <?php echo e((Request::segment(1) == 'support')?'active':''); ?>">
-                            <a href="<?php echo e(route('support.index')); ?>" class="dash-link">
-                                <span class="dash-micon"><i class="ti ti-headphones"></i></span><span class="dash-mtext"><?php echo e(__('Support System')); ?></span>
-                            </a>
-                        </li>
-                        <li class="dash-item dash-hasmenu <?php echo e((Request::segment(1) == 'zoom-meeting' || Request::segment(1) == 'zoom-meeting-calender')?'active':''); ?>">
-                            <a href="<?php echo e(route('zoom-meeting.index')); ?>" class="dash-link">
-                                <span class="dash-micon"><i class="ti ti-user-check"></i></span><span class="dash-mtext"><?php echo e(__('Zoom Meeting')); ?></span>
-                            </a>
-                        </li>
-                        <li class="dash-item dash-hasmenu <?php echo e((Request::segment(1) == 'chats')?'active':''); ?>">
-                            <a href="<?php echo e(url('chats')); ?>" class="dash-link">
-                                <span class="dash-micon"><i class="ti ti-message-circle"></i></span><span class="dash-mtext"><?php echo e(__('Messenger')); ?></span>
-                            </a>
-                        </li>
-                    <?php endif; ?>
 
-                    <!--------------------- Start System Setup ----------------------------------->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <!--------------
+                    ------- Start System Setup ----------------------------------->
 
                     <?php if((\Auth::user()->type != 'super admin')): ?>
 

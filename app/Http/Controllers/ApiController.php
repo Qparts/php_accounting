@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
 use App\Models\ProjectUser;
 use App\Models\User;
 use App\Traits\ApiResponser;
@@ -25,7 +26,6 @@ class ApiController extends Controller
 
     public function login(Request $request)
     {
-
         $attr = $request->validate([
             'email' => 'required|string|email|',
             'password' => 'required|string'
@@ -44,7 +44,7 @@ class ApiController extends Controller
         return $this->success([
             'token' => auth()->user()->createToken('API Token')->plainTextToken,
             'user'=> auth()->user()->id,
-//            'user'=> auth()->user()->id,
+         //  'user_data'=> auth()->user(),
             'settings' =>$settings,
         ],'Login successfully.');
     }
@@ -185,4 +185,8 @@ class ApiController extends Controller
         return $this->success( [],'Uploaded successfully.');
     }
 
+    public function getData(){
+        $customer = Customer::where('created_by',Auth::user()->id)->get();
+        return $customer;
+    }
 }
