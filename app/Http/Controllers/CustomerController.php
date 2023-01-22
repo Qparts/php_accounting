@@ -63,7 +63,6 @@ class CustomerController extends Controller
     {
         if(\Auth::user()->can('create customer'))
         {
-
             $rules = [
                 'name' => 'required',
                 'contact' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/',

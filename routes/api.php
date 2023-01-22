@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\InvoiceController;
+use App\Http\Controllers\Api\VendorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
@@ -24,4 +27,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('upload-photos', [ApiController::class, 'uploadImage']);
 
     Route::get('get-data', [ApiController::class, 'getData']);
+
+    //Customer
+    Route::post('customer', [CustomerController::class, 'store']);
+
+    //vendor
+    Route::post('vendor', [VendorController::class, 'store']);
+
+    //invoice
+    Route::get('list/category', [InvoiceController::class, 'listCategory']);
+    Route::get('list/invoice/number', [InvoiceController::class, 'listInvoiceNumber']);
+    Route::get('product/invoice', [InvoiceController::class, 'productService']);
+
+    Route::post('customer/invoice', [InvoiceController::class, 'createInvoice']);
 });
