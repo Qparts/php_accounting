@@ -38,6 +38,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('list/category', [InvoiceController::class, 'listCategory']);
     Route::get('list/invoice/number', [InvoiceController::class, 'listInvoiceNumber']);
     Route::get('product/invoice', [InvoiceController::class, 'productService']);
-
-    Route::post('customer/invoice', [InvoiceController::class, 'createInvoice']);
+    Route::post('invoice', [InvoiceController::class, 'createInvoice']);
 });

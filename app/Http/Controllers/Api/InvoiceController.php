@@ -40,30 +40,28 @@ class InvoiceController extends Controller
                     'issue_date' => 'required',
                     'due_date' => 'required',
                     'category_id' => 'required',
-                    'items' => 'required',
+                     'items' => 'required'
                 ]
             );
             if($validator->fails())
             {
                 $messages = $validator->getMessageBag();
-
-                return redirect()->back()->with('error', $messages->first());
+                return $this->error($messages,409);
             }
-            $status = Invoice::$statues;
+
             $invoice                 = new Invoice();
             $invoice->invoice_id     = $this->invoiceNumber();
             $invoice->customer_id    = $request->customer_id;
             $invoice->status         = 0;
             $invoice->issue_date     = $request->issue_date;
+            $invoice->send_date     = $request->issue_date;
             $invoice->due_date       = $request->due_date;
             $invoice->category_id    = $request->category_id;
             $invoice->ref_number     = $request->ref_number;
-
             $invoice->created_by     = Auth::user()->creatorId();
             $invoice->save();
             CustomField::saveData($invoice, $request->customField);
             $products = $request->items;
-
             for($i = 0; $i < count($products); $i++)
             {
 
@@ -76,12 +74,8 @@ class InvoiceController extends Controller
                 $invoiceProduct->discount    = $products[$i]['discount'];
                 $invoiceProduct->price       = $products[$i]['price'];
                 $invoiceProduct->description = $products[$i]['description'];
-
                 $invoiceProduct->save();
-
                 //inventory management (Quantity)
-
-
                 Utility::total_quantity('minus',$invoiceProduct->quantity,$invoiceProduct->product_id);
 
             }
