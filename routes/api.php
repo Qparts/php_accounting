@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\InvoiceController;
+use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\VendorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,8 +27,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('stop-tracker', [ApiController::class, 'stopTracker']);
     Route::post('upload-photos', [ApiController::class, 'uploadImage']);
 
-    Route::get('get-data', [ApiController::class, 'getData']);
-
     //Customer
     Route::post('customer', [CustomerController::class, 'store']);
 
@@ -35,8 +34,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('vendor', [VendorController::class, 'store']);
 
     //invoice
-    Route::get('list/category', [InvoiceController::class, 'listCategory']);
-    Route::get('list/invoice/number', [InvoiceController::class, 'listInvoiceNumber']);
-    Route::get('product/invoice', [InvoiceController::class, 'productService']);
     Route::post('invoice', [InvoiceController::class, 'createInvoice']);
+    Route::post('sales/customer-payment', [InvoiceController::class, 'customerPayment']);
+
+    //product
+    Route::post('products', [ProductController::class, 'createProduct']);
+
+
 });

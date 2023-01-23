@@ -28,14 +28,16 @@ class CustomerController extends Controller
         if(Auth::user()->can('create customer'))
         {
             $rules = [
-                'name' => 'required',
-                'contact' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/',
-                'email' => [
-                    'required',
-                    Rule::unique('customers')->where(function ($query) {
-                        return $query->where('created_by', Auth::user()->id);
-                    })
-                ],
+                'contact.name' => 'required',
+                'contact.organization' => 'required',
+//                'contact.email' => [
+//                    'required',
+//                    Rule::unique('customers')->where(function ($query) {
+//                        return $query->where('created_by', Auth::user()->id);
+//                    })
+//                ],
+                'contact.email' =>'required',
+                'contact.phone_number'=>'required|regex:/^([0-9\s\-\+\(\)]*)$/'
             ];
 
             $validator = \Validator::make($request->all(), $rules);
@@ -55,26 +57,26 @@ class CustomerController extends Controller
             {
                 $customer                  = new Customer();
                 $customer->customer_id     = $this->customerNumber();
-                $customer->name            = $request->name;
-                $customer->contact         = $request->contact;
-                $customer->email           = $request->email;
-                $customer->tax_number      =$request->tax_number;
+                $customer->name            = $request->contact['name'];
+                $customer->contact         = $request->contact['phone_number'];
+                $customer->email           = $request->contact['email'];
+                $customer->tax_number      =$request->contact['tax_number'];
                 $customer->created_by      = Auth::user()->creatorId();
-                $customer->billing_name    = $request->billing_name;
-                $customer->billing_country = $request->billing_country;
-                $customer->billing_state   = $request->billing_state;
-                $customer->billing_city    = $request->billing_city;
-                $customer->billing_phone   = $request->billing_phone;
-                $customer->billing_zip     = $request->billing_zip;
-                $customer->billing_address = $request->billing_address;
+                $customer->billing_name    = $request->contact['billing_name'] ?? "Riyadh" ;
+                $customer->billing_country = $request->contact['billing_country'] ?? "Saudi Arabia" ;
+                $customer->billing_state   = $request->contact['billing_state'] ?? "Riyadh" ;
+                $customer->billing_city    = $request->contact['billing_city'] ?? "Riyadh" ;
+                $customer->billing_phone   = $request->contact['phone_number'];
+                $customer->billing_zip     = $request->contact['billing_zip'] ?? 12211 ;
+                $customer->billing_address = $request->contact['billing_address'] ?? "Riyadh" ;
 
-                $customer->shipping_name    = $request->shipping_name;
-                $customer->shipping_country = $request->shipping_country;
-                $customer->shipping_state   = $request->shipping_state;
-                $customer->shipping_city    = $request->shipping_city;
-                $customer->shipping_phone   = $request->shipping_phone;
-                $customer->shipping_zip     = $request->shipping_zip;
-                $customer->shipping_address = $request->shipping_address;
+                $customer->shipping_name    = $request->contact['shipping_name'] ?? "Riyadh" ;
+                $customer->shipping_country = $request->contact['shipping_country'] ?? "Saudi Arabia" ;
+                $customer->shipping_state   = $request->contact['shipping_state'] ?? "Riyadh" ;
+                $customer->shipping_city    = $request->contact['shipping_city'] ?? "Riyadh" ;
+                $customer->shipping_phone   = $request->contact['phone_number'];
+                $customer->shipping_zip     = $request->contact['shipping_zip'] ?? 12211 ;
+                $customer->shipping_address = $request->contact['shipping_address'] ?? "Riyadh" ;
 
                 $customer->lang = !empty($default_language) ? $default_language->value : '';
                 $customer->save();

@@ -6,10 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\CustomField;
 use App\Models\Invoice;
+use App\Models\InvoicePayment;
 use App\Models\InvoiceProduct;
 use App\Models\ProductService;
 use App\Models\ProductServiceCategory;
+use App\Models\Revenue;
 use App\Models\StockReport;
+use App\Models\Transaction;
 use App\Models\Utility;
 use App\Traits\ApiResponse;
 use Illuminate\Database\Eloquent\Model;
@@ -23,25 +26,19 @@ class InvoiceController extends Controller
     public function createInvoice(Request $request){
         if(Auth::user()->can('create invoice'))
         {
-
-            //prerequisites
-            $customFields   = CustomField::where('created_by', '=', Auth::user()->creatorId())->where('module', '=', 'invoice')->get();
-//            $invoice_number = Auth::user()->invoiceNumberFormat($this->invoiceNumber());
-//            $customers      = Customer::where('created_by', Auth::user()->creatorId())->get()->pluck('name', 'id');
-//            $customers->prepend('Select Customer', '');
-//            $category = ProductServiceCategory::where('created_by', Auth::user()->creatorId())->where('type', 1)->get()->pluck('name', 'id');
-//            $category->prepend('Select Category', '');
-//            $product_services = ProductService::where('created_by', Auth::user()->creatorId())->get()->pluck('name', 'id');
-//            $product_services->prepend('--', '');
             //creation of invoice
             $validator = \Validator::make(
-                $request->all(), [
-                    'customer_id' => 'required',
-                    'issue_date' => 'required',
-                    'due_date' => 'required',
-                    'category_id' => 'required',
-                     'items' => 'required'
+                 $request->all(), [
+                    'invoice.contact_id' => 'required',
+                    'invoice.reference' => 'required',
+                    'invoice.description' => 'required',
+                    'invoice.issue_date' => 'required',
+                    'invoice.due_date' => 'required',
+                    'invoice.status' => 'required',
+                    'invoice.inventory_id' => 'required',
+                    'invoice.line_items' => 'required'
                 ]
+
             );
             if($validator->fails())
             {
@@ -51,28 +48,29 @@ class InvoiceController extends Controller
 
             $invoice                 = new Invoice();
             $invoice->invoice_id     = $this->invoiceNumber();
-            $invoice->customer_id    = $request->customer_id;
+           // $invoice->customer_id    = $request->customer_id;
+            $invoice->customer_id    = $request->invoice['contact_id'];
             $invoice->status         = 0;
-            $invoice->issue_date     = $request->issue_date;
-            $invoice->send_date     = $request->issue_date;
-            $invoice->due_date       = $request->due_date;
-            $invoice->category_id    = $request->category_id;
-            $invoice->ref_number     = $request->ref_number;
+            $invoice->issue_date     = $request->invoice['issue_date'];
+            $invoice->send_date     = $request->invoice['issue_date'];
+            $invoice->due_date       = $request->invoice['due_date'];
+            $invoice->category_id    = $request->invoice['inventory_id'];
+            //$invoice->ref_number     = $request->ref_number;
+            $invoice->ref_number     = $request->invoice['reference'];
             $invoice->created_by     = Auth::user()->creatorId();
             $invoice->save();
-            CustomField::saveData($invoice, $request->customField);
-            $products = $request->items;
+            CustomField::saveData($invoice, $request->custom_fields);
+            $products = $request->invoice['line_items'];
             for($i = 0; $i < count($products); $i++)
             {
 
                 $invoiceProduct              = new InvoiceProduct();
                 $invoiceProduct->invoice_id  = $invoice->id;
-                $invoiceProduct->product_id  = $products[$i]['item'];
+                $invoiceProduct->product_id  = $products[$i]['product_id'];
                 $invoiceProduct->quantity    = $products[$i]['quantity'];
-                $invoiceProduct->tax         = $products[$i]['tax'];
-//                $invoiceProduct->discount    = isset($products[$i]['discount']) ? $products[$i]['discount'] : 0;
+                $invoiceProduct->tax         = $products[$i]['tax_percent'];
                 $invoiceProduct->discount    = $products[$i]['discount'];
-                $invoiceProduct->price       = $products[$i]['price'];
+                $invoiceProduct->price       = $products[$i]['unit_price'];
                 $invoiceProduct->description = $products[$i]['description'];
                 $invoiceProduct->save();
                 //inventory management (Quantity)
@@ -94,40 +92,72 @@ class InvoiceController extends Controller
         }
     }
 
-    function invoiceNumber()
-    {
-        $latest = Invoice::where('created_by', '=', Auth::user()->creatorId())->latest()->first();
-        if(!$latest)
+    public function customerPayment(Request $request){
+        if(\Auth::user()->can('create revenue'))
         {
-            return 1;
-        }
 
-        return $latest->invoice_id + 1;
+            $validator = \Validator::make(
+                $request->all(), [
+                'invoice_payment.reference'=>'required',
+                'invoice_payment.invoice_id'=>'required',
+                'invoice_payment.account_id'=>'required',
+                'invoice_payment.date'=>'required',
+                'invoice_payment.amount'=>'required',
+                ]
+            );
+            if($validator->fails())
+            {
+                $messages = $validator->getMessageBag();
+
+                return $this->error($messages,409);
+            }
+
+            $revenue                 = new Revenue();
+            $revenue->date           = $request->invoice_payment['date'];
+            $revenue->amount         = $request->invoice_payment['amount'];
+            $revenue->account_id     = $request->invoice_payment['account_id'];
+            $revenue->customer_id    = $request->invoice_payment['customer_id'];
+            $revenue->category_id    = $request->invoice_payment['category_id']?? 0;
+            $revenue->payment_method = 0;
+            $revenue->reference      = $request->invoice_payment['reference'];
+
+            $revenue->created_by     = \Auth::user()->creatorId();
+            $revenue->save();
+
+            $category            = ProductServiceCategory::where('id', $request->invoice_payment['category_id'])->first();
+
+
+            $revenue->payment_id = $revenue->id;
+            $revenue->type       = 'Revenue';
+            $revenue->category   = $category->name;
+            $revenue->user_id    = $revenue->customer_id;
+            $revenue->user_type  = 'Customer';
+            $revenue->account    = $request->invoice_payment['account_id'];
+            Transaction::addTransaction($revenue);
+
+            $customer         = Customer::where('id', $request->invoice_payment['customer_id'])->first();
+            $payment          = new InvoicePayment();
+            $payment->name    = !empty($customer) ? $customer['name'] : '';
+            $payment->date    = \Auth::user()->dateFormat($request->invoice_payment['date']);
+            $payment->amount  = \Auth::user()->priceFormat($request->invoice_payment['amount']);
+            $payment->invoice = '';
+
+            if(!empty($customer))
+            {
+                Utility::userBalance('customer', $customer->id, $revenue->amount, 'credit');
+            }
+
+            Utility::bankAccountBalance($request->invoice_payment['account_id'], $revenue->amount, 'credit');
+
+            return $this->success($revenue,"success");
+        }
+        else
+        {
+            return $this->error("you don't have permission",401);
+        }
     }
 
-    public function listCategory(){
-        $category = ProductServiceCategory::where('created_by', Auth::user()->creatorId())->where('type', 1)->get()->pluck('name', 'id');
-        if($category){
-            return $this->success($category,"success");
-        }
-        return $this->error("no categories",404);
 
-    }
 
-    public function listInvoiceNumber(){
-        $invoice_number = Auth::user()->invoiceNumberFormat($this->invoiceNumber());
-        if($invoice_number){
-            return $this->success(["invoice_number"=>$invoice_number],"success");
-        }
-        return $this->error("no invoices",404);
-    }
-
-    public function productService(){
-        $product_services = ProductService::where('created_by', Auth::user()->creatorId())->get()->pluck('name', 'id');
-        if($product_services){
-            return $this->success(["products"=>$product_services],"success");
-        }
-        return $this->error("no products",404);
-    }
 
 }
