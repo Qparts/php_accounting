@@ -254,10 +254,16 @@ class ApiController extends Controller
                 JoiningLetter::defaultJoiningLetterRegister($user->id);
                 NOC::defaultNocCertificateRegister($user->id);
             }
+            $token = $user->createToken('API Token')->plainTextToken;
 
-            return $this->success($user);
+            return $this->success(['user' => $token]);
 
         }
         return $this->error("something went wrong",409);
     }
+
+    public function getDataFromLoggedInUser(){
+        return Auth()->user();
+    }
+
 }

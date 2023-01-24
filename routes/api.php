@@ -17,6 +17,8 @@ use App\Http\Controllers\ApiController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+
 Route::post('login', 'ApiController@login');
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
@@ -28,8 +30,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('upload-photos', [ApiController::class, 'uploadImage']);
 
 
-    //user
-    Route::post('register', [ApiController::class, 'register']);
+
 
     //Customer
     Route::post('customer', [CustomerController::class, 'store']);
@@ -44,5 +45,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //product
     Route::post('products', [ProductController::class, 'createProduct']);
 
+    //user
+    Route::post('register', [ApiController::class, 'register']);
+
+    Route::get('get-data', [ApiController::class, 'getDataFromLoggedInUser']);
 
 });
