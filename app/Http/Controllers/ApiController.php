@@ -4,9 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\ExperienceCertificate;
+use App\Models\GenerateOfferLetter;
+use App\Models\JoiningLetter;
+use App\Models\NOC;
+use App\Models\Plan;
 use App\Models\ProjectUser;
 use App\Models\User;
+use App\Traits\ApiResponse;
 use App\Traits\ApiResponser;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AssignProject;
@@ -16,7 +23,10 @@ use App\Models\Tag;
 use App\Models\ProjectTask;
 use App\Models\TimeTracker;
 use App\Models\TrackPhoto;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Role;
 
 
 class ApiController extends Controller
@@ -188,5 +198,66 @@ class ApiController extends Controller
     public function getData(){
         $customer = Customer::where('created_by',Auth::user()->id)->get();
         return $customer;
+    }
+    public function register(Request $request){
+        if(\Auth::user()->can('create user'))
+        {
+            $default_language = DB::table('settings')->select('value')->where('name', 'default_language')->first();
+            if(\Auth::user()->type == 'super admin')
+            {
+                $validator = \Validator::make(
+                    $request->all(), [
+                        'name' => 'required|max:120',
+                        'email' => 'required|email|unique:users',
+                        'password' => 'required|min:6',
+                    ]
+                );
+                if($validator->fails())
+                {
+                    $messages = $validator->getMessageBag();
+                    return $this->error($messages,409);
+                }
+                $user               = new User();
+                $user['name']       = $request->name;
+                $user['email']      = $request->email;
+                $psw                = $request->password;
+                $user['password']   = Hash::make($request->password);
+                $user['type']       = 'company';
+                $user['default_pipeline'] = 1;
+                $user['plan'] = 1;
+                $user['lang']       = !empty($default_language) ? $default_language->value : '';
+                $user['created_by'] = \Auth::user()->creatorId();
+                $user['plan']       = Plan::first()->id;
+
+                $user->save();
+                $role_r = Role::findByName('company','web');
+                $user->assignRole($role_r);
+               // $user->userDefaultData();
+                $user->userDefaultDataRegister($user->id);
+                $user->userWarehouseRegister($user->id);
+
+                //default bank account for new company
+                $user->userDefaultBankAccount($user->id);
+
+                Utility::chartOfAccountTypeData($user->id);
+                Utility::chartOfAccountData($user);
+                // default chart of account for new company
+                Utility::chartOfAccountData1($user->id);
+
+                Utility::pipeline_lead_deal_Stage($user->id);
+                Utility::project_task_stages($user->id);
+                Utility::labels($user->id);
+                Utility::sources($user->id);
+                Utility::jobStage($user->id);
+                GenerateOfferLetter::defaultOfferLetterRegister($user->id);
+                ExperienceCertificate::defaultExpCertificatRegister($user->id);
+                JoiningLetter::defaultJoiningLetterRegister($user->id);
+                NOC::defaultNocCertificateRegister($user->id);
+            }
+
+            return $this->success($user);
+
+        }
+        return $this->error("something went wrong",409);
     }
 }

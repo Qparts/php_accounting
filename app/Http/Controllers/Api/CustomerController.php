@@ -45,7 +45,7 @@ class CustomerController extends Controller
             if($validator->fails())
             {
                 $messages = $validator->getMessageBag();
-                return redirect()->route('customer.index')->with('error', $messages->first());
+                return $this->error($messages,409);
             }
 
             $objCustomer    = Auth::user();
