@@ -33,7 +33,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
     //Customer
-    Route::post('customer', [CustomerController::class, 'store']);
+    Route::post('sales/customer', [CustomerController::class, 'store']);
 
     //vendor
     Route::post('vendor', [VendorController::class, 'store']);
