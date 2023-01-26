@@ -523,7 +523,7 @@ class User extends Authenticatable
            // $monthlyIncome = Revenue::selectRaw('sum(amount) amount')->where('created_by', '=', $this->creatorId())->whereRaw('year(`date`) = ?', array(date('Y')))->whereRaw('month(`date`) = ?', $i)->first();
             $monthlyIncome = 0;
            // $invoices      = Invoice:: select('*')->where('created_by', \Auth::user()->creatorId())->whereRaw('year(`send_date`) = ?', array(date('Y')))->whereRaw('month(`send_date`) = ?', $i)->get();
-            $invoices      = 0;
+            $invoices      = [];
 
             $invoiceArray = array();
             foreach($invoices as $invoice)
