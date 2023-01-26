@@ -36,11 +36,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('sales/customer', [CustomerController::class, 'store']);
 
     //vendor
-    Route::post('vendor', [VendorController::class, 'store']);
+    Route::post('purchases/vendor', [VendorController::class, 'store']);
 
     //invoice
     Route::post('invoice', [InvoiceController::class, 'createInvoice']);
     Route::post('sales/customer-payment', [InvoiceController::class, 'customerPayment']);
+    Route::post('sales/credit-note', [InvoiceController::class, 'createCreditNote']);
 
     //product
     Route::post('products', [ProductController::class, 'createProduct']);
@@ -48,6 +49,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //user
     Route::post('register', [ApiController::class, 'register']);
 
-    Route::get('get-data', [ApiController::class, 'getDataFromLoggedInUser']);
+    Route::get('current-user', [ApiController::class, 'getDataFromLoggedInUser']);
 
 });

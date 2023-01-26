@@ -93,7 +93,6 @@ class Invoice extends Model
         {
             $due += $payment->amount;
         }
-
         return ($this->getTotal() - $due) - $this->invoiceTotalCreditNote();
     }
 

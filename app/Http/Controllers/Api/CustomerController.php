@@ -9,15 +9,8 @@ use App\Traits\ApiResponse;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use App\Exports\CustomerExport;
-use App\Imports\CustomerImport;
 use App\Models\Customer;
-use App\Models\CustomField;
-use App\Models\Transaction;
-use App\Models\Utility;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
 {
@@ -30,12 +23,6 @@ class CustomerController extends Controller
             $rules = [
                 'contact.name' => 'required',
                 'contact.organization' => 'required',
-//                'contact.email' => [
-//                    'required',
-//                    Rule::unique('customers')->where(function ($query) {
-//                        return $query->where('created_by', Auth::user()->id);
-//                    })
-//                ],
                 'contact.email' =>'required',
                 'contact.phone_number'=>'required|regex:/^([0-9\s\-\+\(\)]*)$/'
             ];
@@ -103,4 +90,6 @@ class CustomerController extends Controller
 
         return $latest->customer_id + 1;
     }
+
+
 }

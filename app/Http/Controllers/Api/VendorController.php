@@ -24,21 +24,19 @@ class VendorController extends Controller
         if(Auth::user()->can('create vender'))
         {
             $rules = [
-                'name' => 'required',
-                'contact' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/',
-                'email' => 'required|email|unique:venders',
+            'contact.name'=>'required',
+            'contact.organization'=>'required',
+            'contact.email'=>'required',
+            'contact.phone_number'=>'required',
+            'contact.tax_number'=>'required',
             ];
-
-
             $validator = \Validator::make($request->all(), $rules);
-
             if($validator->fails())
             {
                 $messages = $validator->getMessageBag();
 
                 return  $this->error($messages,"409");
             }
-
 
             $objVendor    = Auth::user();
             $creator      = User::find($objVendor->creatorId());
@@ -50,10 +48,10 @@ class VendorController extends Controller
             {
                 $vender                   = new Vender();
                 $vender->vender_id        = $this->venderNumber();
-                $vender->name             = $request->name;
-                $vender->contact          = $request->contact;
-                $vender->email            = $request->email;
-                $vender->tax_number      =$request->tax_number;
+                $vender->name             = $request->contact['name'];
+                $vender->contact          = $request->contact['phone_number'];
+                $vender->email            = $request->contact['email'];
+                $vender->tax_number      =$request->contact['tax_number'];
                 $vender->created_by       = Auth::user()->creatorId();
                 $vender->billing_name     = $request->billing_name;
                 $vender->billing_country  = $request->billing_country;
@@ -69,6 +67,23 @@ class VendorController extends Controller
                 $vender->shipping_phone   = $request->shipping_phone;
                 $vender->shipping_zip     = $request->shipping_zip;
                 $vender->shipping_address = $request->shipping_address;
+
+                //addresses
+                $vender->billing_name    = $request->contact['billing_name'] ?? "Riyadh" ;
+                $vender->billing_country = $request->contact['billing_country'] ?? "Saudi Arabia" ;
+                $vender->billing_state   = $request->contact['billing_state'] ?? "Riyadh" ;
+                $vender->billing_city    = $request->contact['billing_city'] ?? "Riyadh" ;
+                $vender->billing_phone   = $request->contact['phone_number'];
+                $vender->billing_zip     = $request->contact['billing_zip'] ?? 12211 ;
+                $vender->billing_address = $request->contact['billing_address'] ?? "Riyadh" ;
+
+                $vender->shipping_name    = $request->contact['shipping_name'] ?? "Riyadh" ;
+                $vender->shipping_country = $request->contact['shipping_country'] ?? "Saudi Arabia" ;
+                $vender->shipping_state   = $request->contact['shipping_state'] ?? "Riyadh" ;
+                $vender->shipping_city    = $request->contact['shipping_city'] ?? "Riyadh" ;
+                $vender->shipping_phone   = $request->contact['phone_number'];
+                $vender->shipping_zip     = $request->contact['shipping_zip'] ?? 12211 ;
+                $vender->shipping_address = $request->contact['shipping_address'] ?? "Riyadh" ;
                 $vender->lang             = !empty($default_language) ? $default_language->value : '';
                 $vender->save();
             }
@@ -82,7 +97,7 @@ class VendorController extends Controller
         }
         else
         {
-            return redirect()->back()->with('error', __('Permission denied.'));
+            return $this->error("you don't have permission",401);
         }
     }
 

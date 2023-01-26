@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\CreditNote;
 use App\Models\Customer;
 use App\Models\CustomField;
 use App\Models\Invoice;
@@ -158,6 +159,71 @@ class InvoiceController extends Controller
     }
 
 
+    public function createCreditNote(Request $request){
+        if(\Auth::user()->can('create credit note'))
+        {
+            $validator = \Validator::make(
+                $request->all(), [
+                    'credit_note.contact_id' => 'required',
+                    'credit_note.issue_date' => 'required',
+                    'credit_note.status' => 'required',
+                    'credit_note.inventory_id' => 'required',
+                    'credit_note.invoice_id' => 'required',
+                    'credit_note.line_items'=>'required',
+                   // 'credit_note.description'=>'required'
+                ]
+            );
+            if($validator->fails())
+            {
+                $messages = $validator->getMessageBag();
+
+                return $this->error($messages);
+            }
+
+            $invoiceDue = Invoice::where('id', $request->credit_note['invoice_id'])->with('payments')->first();
+            $amount = 0.0;
+           // $description = "";
+            // get all products related to invoice
+            $productsInInvoice = InvoiceProduct::where('invoice_id',$request->credit_note['invoice_id'])->get(['product_id']);
+            $productsInInvoiceArray = [];
+            foreach($productsInInvoice as $pr){
+                array_push($productsInInvoiceArray,$pr['product_id']);
+            }
+
+            foreach ($request->credit_note['line_items'] as $item){
+                if(in_array($item['product_id'],$productsInInvoiceArray)){
+                    $valueTobeSubtracted = $item['quantity']*$item['unit_price']; // number of items * price of each item
+                    $amount=$amount + $valueTobeSubtracted;
+                }
+                $description = $item['description'];
+                $productService = ProductService::where('id',$item['product_id'])->first();
+                $productService->quantity = $productService->quantity + $item['quantity'];
+                $productService->save();
+            }
+
+            //continue working on invoice
+//            if($amount > $invoiceDue->getDue())
+//            {
+//                return $this->error('maximum '. \Auth::user()->priceFormat($invoiceDue->getDue()) .  ' credit limit of this invoice. ');
+//            }
+            $invoice = $invoiceDue;
+
+            $credit              = new CreditNote();
+            $credit->invoice     = $request->credit_note['invoice_id'];
+            $credit->customer    = $request->credit_note['contact_id'];
+            $credit->date        = $request->credit_note['issue_date'];
+            $credit->amount      = $amount;
+            $credit->description = $description;
+            $credit->save();
+
+            Utility::userBalance('customer', $request->credit_note['contact_id'], $amount, 'credit');
+            return $this->success($credit,"Credit Note successfully created.");
+        }
+        else
+        {
+            return $this->error("Permission denied.");
+        }
+    }
 
 
 }
