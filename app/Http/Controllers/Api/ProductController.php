@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\CustomField;
 use App\Models\ProductService;
+use App\Models\ProductServiceCategory;
 use App\Models\Utility;
 use App\Traits\ApiResponse;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +17,37 @@ class ProductController extends Controller
     use ApiResponse;
 
 
+    public function createCategory(Request $request)
+    {
+        if(\Auth::user()->can('create constant category'))
+        {
+
+            $validator = \Validator::make(
+                $request->all(), [
+                    'category.name' => 'required|max:20'
+                ]
+            );
+            if($validator->fails())
+            {
+                $messages = $validator->getMessageBag();
+
+                return redirect()->back()->with('error', $messages->first());
+            }
+
+            $category             = new ProductServiceCategory();
+            $category->name       = $request->category['name'];
+            $category->color      = $this->rand_color();
+            $category->type       = 0;
+            $category->created_by = \Auth::user()->creatorId();
+            $category->save();
+            return $this->success($category,"success");
+        }
+        else
+        {
+            return $this->error("Permission denied.",401);
+        }
+    }
+
     public function createProduct(Request $request)
     {
 
@@ -24,24 +56,13 @@ class ProductController extends Controller
         {
 
             $rules = [
-//                'sku' => ['required', Rule::unique('product_services')->where(function ($query) {
-//                    return $query->where('created_by', \Auth::user()->id);
-//                })
-         //   ],
-//                'product.sale_price' => 'required|numeric',
-//                'purchase_price' => 'required|numeric',
-//                'category_id' => 'required',
-//                'unit_id' => 'required',
-//                'type' => 'required',
-//                'pro_image' => 'mimes:jpeg,png,jpg,gif,pdf,doc,zip|max:20480',
+
                 'product.name_ar' => 'required',
                 'product.name_en' => 'required',
                 'product.sku'=>'required',
-                'product.barcode'=>'required',
                 'product.description'=>'required',
                 'product.product_unit_type_id'=>'required',
                 'product.track_quantity'=>'required',
-                'product.purchase_item'=>'required',
                 'product.buying_price'=>'required',
                 'product.expense_account_id'=>'required',
                 'product.sale_item'=>'required',
@@ -105,5 +126,17 @@ class ProductController extends Controller
         {
             return $this->error("something went wrong",409);
         }
+    }
+
+    private function rand_color() {
+        return sprintf('#%06X', mt_rand(0, 0xFFFFFF));
+    }
+
+    public function getProduct($id){
+        $product = ProductService::where('id',$id)->first();
+        if(!$product){
+            return $this->error("product not found",404);
+        }
+        return $this->success($product,"success");
     }
 }

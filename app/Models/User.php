@@ -411,7 +411,7 @@ class User extends Authenticatable
 
     public function todayIncome()
     {
-        $revenue      = Revenue::where('created_by', '=', $this->creatorId())->whereRaw('Date(date) = SELECT CURRENT_DATE ')->where('created_by', \Auth::user()->creatorId())->sum('amount');
+        $revenue      = Revenue::where('created_by', '=', $this->creatorId())->whereRaw('Date(date) = CURDATE()')->where('created_by', \Auth::user()->creatorId())->sum('amount');
         $invoices     = Invoice:: select('*')->where('created_by', \Auth::user()->creatorId())->whereRAW('Date(send_date) = CURDATE()')->get();
         $invoiceArray = array();
         foreach($invoices as $invoice)
