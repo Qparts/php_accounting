@@ -129,6 +129,7 @@ class ProductController extends Controller
                 'locale' => app()->getLocale(),
             ], 201, [], JSON_INVALID_UTF8_SUBSTITUTE);
         }
+
         else
         {
             return $this->error("something went wrong",409);
