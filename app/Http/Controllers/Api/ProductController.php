@@ -145,6 +145,12 @@ class ProductController extends Controller
         if(!$product){
             return $this->error("product not found",404);
         }
-        return $this->success($product,"success");
+        return response()->json([
+            'success' => true,
+            'code' => 201,
+            'message' => "success",
+            'data'   => ['product' => $product],
+            'locale' => app()->getLocale(),
+        ], 201, [], JSON_INVALID_UTF8_SUBSTITUTE);
     }
 }
