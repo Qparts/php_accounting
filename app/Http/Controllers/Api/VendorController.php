@@ -93,7 +93,7 @@ class VendorController extends Controller
             }
             $role_r = Role::where('name', '=', 'vender')->firstOrFail();
             $vender->assignRole($role_r); //Assigning role to user
-            return $this->success($vender,"success");
+            return response()->json(['vendor'=>$vender]);
         }
         else
         {

@@ -84,8 +84,8 @@ class InvoiceController extends Controller
             StockReport::where('type','=','invoice')->where('type_id' ,'=', $invoice->id)->delete();
             $description=$invoiceProduct->quantity.'  '.__(' quantity sold in invoice').' '. Auth::user()->invoiceNumberFormat($invoice->invoice_id);
             Utility::addProductStock( $invoiceProduct->product_id,$invoiceProduct->quantity,$type,$description,$type_id);
+            return response()->json(['invoice'=>$invoice]);
 
-            return $this->success(["msg"=>"invoice created"],"success");
         }
         else
         {

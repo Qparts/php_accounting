@@ -56,6 +56,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //inventory / warehouses
 
     Route::post('inventories',[InventoryController::class,'store']);
+    Route::get('inventories',[InventoryController::class,'show']);
 
 
 });
