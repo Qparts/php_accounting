@@ -120,11 +120,8 @@ class ProductController extends Controller
             $productService->save();
           //  CustomField::saveData($productService, $request->customField);
 
-         //   return $this->success($productService,"success");
             return response()->json(['product'=>$productService]);
-
         }
-
         else
         {
             return $this->error("something went wrong",409);
