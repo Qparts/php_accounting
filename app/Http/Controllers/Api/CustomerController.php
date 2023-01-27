@@ -72,7 +72,7 @@ class CustomerController extends Controller
             {
               return $this->error("something went wrong",409);
             }
-            return $this->success($customer,"success");
+            return response()->json(['customer'=>$customer]);
         }
         else
         {

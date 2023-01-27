@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\DB;
 class InventoryController extends Controller
 {
     use ApiResponse;
+    public function show(){
+
+    }
     public function store(Request $request)
 {
     if(\Auth::user()->can('create warehouse'))
@@ -41,7 +44,7 @@ class InventoryController extends Controller
         $warehouse->city_zip   = $request->inventory['address']['shipping_zip'];
         $warehouse->created_by = \Auth::user()->creatorId();
         $warehouse->save();
-        return $this->success($warehouse,201);
+        return response()->json(['inventory'=>$warehouse]);
     }
     else
     {
