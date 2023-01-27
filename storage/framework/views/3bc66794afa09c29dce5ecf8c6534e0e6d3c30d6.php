@@ -128,4 +128,4 @@ unset($__errorArgs, $__bag); ?>
 </script>
 
 
-<?php echo $__env->make('layouts.auth', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Applications/MAMP/htdocs/erp/resources/views/auth/login.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.auth', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/php-accounting/resources/views/auth/login.blade.php ENDPATH**/ ?>

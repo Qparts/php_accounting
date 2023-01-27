@@ -977,4 +977,4 @@
 </script>
 </body>
 </html>
-<?php /**PATH /Applications/MAMP/htdocs/erp/resources/views/layouts/landing.blade.php ENDPATH**/ ?>
+<?php /**PATH /var/www/html/php-accounting/resources/views/layouts/landing.blade.php ENDPATH**/ ?>

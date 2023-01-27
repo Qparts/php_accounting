@@ -230,4 +230,4 @@
 <?php echo $__env->yieldPushContent('custom-scripts'); ?>
 </body>
 </html>
-<?php /**PATH /Applications/MAMP/htdocs/erp/resources/views/layouts/auth.blade.php ENDPATH**/ ?>
+<?php /**PATH /var/www/html/php-accounting/resources/views/layouts/auth.blade.php ENDPATH**/ ?>
