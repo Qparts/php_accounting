@@ -117,7 +117,6 @@ class InventoryController extends Controller
                 }
 
             }
-
             return response()->json(['purchase'=>$purchase]);
         }
         else
