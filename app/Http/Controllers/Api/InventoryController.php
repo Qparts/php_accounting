@@ -109,7 +109,6 @@ class InventoryController extends Controller
                 $type_id = $purchase->id;
                 $description=$products[$i]['actual_quantity'].'  '.__(' quantity add in purchase').' '. \Auth::user()->purchaseNumberFormat($purchase->purchase_id);
                 Utility::addProductStock( $products[$i]['product_id'],$products[$i]['actual_quantity'],$type,$description,$type_id);
-
                 //Warehouse Stock Report
                 if(isset($products[$i]['product_id']))
                 {
