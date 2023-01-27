@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\InventoryController;
 use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\VendorController;
@@ -50,7 +51,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //user
     Route::post('register', [ApiController::class, 'register']);
-
     Route::get('current-user', [ApiController::class, 'getDataFromLoggedInUser']);
+
+    //inventory / warehouses
+
+    Route::post('inventories',[InventoryController::class,'store']);
+
 
 });
