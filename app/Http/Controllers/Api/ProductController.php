@@ -121,13 +121,8 @@ class ProductController extends Controller
           //  CustomField::saveData($productService, $request->customField);
 
          //   return $this->success($productService,"success");
-            return response()->json([
-                'success' => true,
-                'code' => 201,
-                'message' => "success",
-                'data'   => ['product' => $productService],
-                'locale' => app()->getLocale(),
-            ], 201, [], JSON_INVALID_UTF8_SUBSTITUTE);
+            return response()->json(['product'=>$productService]);
+
         }
 
         else
