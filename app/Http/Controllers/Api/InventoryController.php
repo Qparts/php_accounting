@@ -18,7 +18,8 @@ class InventoryController extends Controller
 {
     use ApiResponse;
     public function show(){
-
+        $warehouses = warehouse::where('created_by',Auth::user()->id)->get();
+        return response()->json(['inventories'=>$warehouses]);
     }
     public function store(Request $request)
 {
