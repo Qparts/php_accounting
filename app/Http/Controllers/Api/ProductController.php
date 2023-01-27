@@ -132,8 +132,8 @@ class ProductController extends Controller
         return sprintf('#%06X', mt_rand(0, 0xFFFFFF));
     }
 
-    public function getProduct($id){
-        $product = ProductService::where('id',$id)->first();
+    public function getProduct($sku){
+        $product = ProductService::where('sku',$sku)->first();
         if(!$product){
             return $this->error("product not found",404);
         }
