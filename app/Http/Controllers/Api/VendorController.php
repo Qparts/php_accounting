@@ -108,6 +108,9 @@ class VendorController extends Controller
 
     public function getVendor($id){
         $vendor = Vender::where('id',$id)->where('created_by',Auth::user()->id)->first();
+        if(!$vendor){
+            return response()->json(['message'=>"no vendor found"]);
+        }
         return response()->json(['vendor'=>$vendor]);
     }
     function venderNumber()

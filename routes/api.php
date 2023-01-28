@@ -39,6 +39,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //vendor
     Route::post('vendors', [VendorController::class, 'store']);
     Route::get('vendors', [VendorController::class, 'listVendors']);
+    Route::get('vendor/{id}', [VendorController::class, 'getVendor']);
 
     //invoice
     Route::post('invoice', [InvoiceController::class, 'createInvoice']);
@@ -59,6 +60,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('inventories',[InventoryController::class,'store']);
     Route::get('inventories',[InventoryController::class,'show']);
     Route::post('adjust-inventory',[InventoryController::class,'purchaseProductsForInventory']);
+
+    //bills
+    //Route::post('bills');
 
 
 });
