@@ -37,7 +37,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('sales/customer', [CustomerController::class, 'store']);
 
     //vendor
-    Route::post('purchases/vendor', [VendorController::class, 'store']);
+    Route::post('vendors', [VendorController::class, 'store']);
+    Route::get('vendors', [VendorController::class, 'listVendors']);
 
     //invoice
     Route::post('invoice', [InvoiceController::class, 'createInvoice']);

@@ -19,6 +19,11 @@ class VendorController extends Controller
 {
     use ApiResponse;
 
+    public function listVendors(){
+        $vendors =  Vender::where('created_by',Auth::user()->id)->get();
+        return response()->json(['vendors'=>$vendors]);
+    }
+
     public function store(Request $request)
     {
         if(Auth::user()->can('create vender'))
@@ -101,6 +106,10 @@ class VendorController extends Controller
         }
     }
 
+    public function getVendor($id){
+        $vendor = Vender::where('id',$id)->where('created_by',Auth::user()->id)->first();
+        return response()->json(['vendor'=>$vendor]);
+    }
     function venderNumber()
     {
         $latest = Vender::where('created_by', '=', Auth::user()->creatorId())->latest()->first();
@@ -111,4 +120,5 @@ class VendorController extends Controller
 
         return $latest->vender_id + 1;
     }
+
 }
