@@ -88,7 +88,6 @@ class BillController extends Controller
 
     public function store(Request $request)
     {
-//        dd($request->all());
         if(\Auth::user()->can('create bill'))
         {
             $validator = \Validator::make(

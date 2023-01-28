@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\BillsController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\InventoryController;
 use App\Http\Controllers\Api\InvoiceController;
@@ -62,7 +63,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('adjust-inventory',[InventoryController::class,'purchaseProductsForInventory']);
 
     //bills
-    //Route::post('bills');
+    Route::post('bills',[BillsController::class,'store']);
+    Route::get('bills',[BillsController::class,'listBills']);
 
 
 });
