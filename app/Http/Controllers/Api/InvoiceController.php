@@ -226,4 +226,16 @@ class InvoiceController extends Controller
     }
 
 
+    function invoiceNumber()
+    {
+        $latest = Invoice::where('created_by', '=', \Auth::user()->creatorId())->latest()->first();
+        if(!$latest)
+        {
+            return 1;
+        }
+
+        return $latest->invoice_id + 1;
+    }
+
+
 }
