@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Bill;
 use App\Models\BillProduct;
 use App\Models\CustomField;
+use App\Models\DebitNote;
 use App\Models\Utility;
 use App\Models\Vender;
 use Illuminate\Database\Eloquent\Model;
@@ -96,5 +97,56 @@ class BillsController extends Controller
         }
 
         return $latest->bill_id + 1;
+    }
+
+    public function getBill($id){
+        $bill = Bill::where('created_by',Auth::user()->id)->where('id',$id)->first();
+        if(!$bill){
+            return response()->json(['message'=>"no bill found"]);
+        }
+        return response()->json(['bill'=>$bill]);
+    }
+
+    public function debitNote(Request $request,$id){
+        if(\Auth::user()->can('create debit note'))
+        {
+            $validator = \Validator::make(
+                $request->all(), [
+                    'bill'=>[
+                        'allocations_attributes.amount' => 'required',
+                        'allocations_attributes.date' => 'required'
+                    ]
+                ]
+            );
+            if($validator->fails())
+            {
+                $messages = $validator->getMessageBag();
+
+                return response()->json(['error'=>$messages]);
+            }
+
+            $bill_id = $id;
+            $billDue = Bill::where('id', $bill_id)->first();
+
+            if($request->amount > $billDue->getDue())
+            {
+                return response()->json(['error'=>'Maximum ' . \Auth::user()->priceFormat($billDue->getDue()) . ' credit limit of this bill.']);
+            }
+            $bill               = Bill::where('id', $bill_id)->first();
+            $debit              = new DebitNote();
+            $debit->bill        = $bill_id;
+            $debit->vendor      = $bill->vender_id;
+            $debit->date        = $request->bill['allocations_attributes']['date'];
+            $debit->amount      = $request->bill['allocations_attributes']['amount'];
+            $debit->description = "debit note";
+            $debit->save();
+            Utility::userBalance('vendor', $bill->vender_id, $request->amount, 'debit');
+
+            return response()->json(['debit_note'=>$debit]);
+        }
+        else
+        {
+            return response()->json(['error'=>"permission denied"]);
+        }
     }
 }

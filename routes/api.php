@@ -51,6 +51,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('products', [ProductController::class, 'createProduct']);
     Route::post('categories', [ProductController::class, 'createCategory']);
     Route::get('products/{sku}', [ProductController::class, 'getProduct']);
+    Route::get('product-name/{name}', [ProductController::class, 'getProductByName']);
 
     //user
     Route::post('register', [ApiController::class, 'register']);
@@ -65,6 +66,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //bills
     Route::post('bills',[BillsController::class,'store']);
     Route::get('bills',[BillsController::class,'listBills']);
+    Route::get('bill/{id}',[BillsController::class,'getBill']);
+
+    Route::post('bills/{id}/allocations ',[BillsController::class,'debitNote']);
 
 
 });

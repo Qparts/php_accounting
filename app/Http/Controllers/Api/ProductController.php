@@ -31,7 +31,7 @@ class ProductController extends Controller
             {
                 $messages = $validator->getMessageBag();
 
-                return redirect()->back()->with('error', $messages->first());
+                return response()->json(['messages'=>$messages]);
             }
 
             $category             = new ProductServiceCategory();
@@ -40,11 +40,11 @@ class ProductController extends Controller
             $category->type       = 0;
             $category->created_by = \Auth::user()->creatorId();
             $category->save();
-            return $this->success($category,"success");
+            return response()->json(['category'=>$category]);
         }
         else
         {
-            return $this->error("Permission denied.",401);
+            return response()->json(['error'=>"Permission denied."]);
         }
     }
 
@@ -77,7 +77,7 @@ class ProductController extends Controller
             {
                 $messages = $validator->getMessageBag();
 
-                return $this->error($messages,"409");
+                return response()->json(['messages'=>$messages]);
             }
 
             $productService                 = new ProductService();
@@ -124,7 +124,7 @@ class ProductController extends Controller
         }
         else
         {
-            return $this->error("something went wrong",409);
+            return response()->json(['error'=>"permission denied."]);
         }
     }
 
@@ -134,6 +134,15 @@ class ProductController extends Controller
 
     public function getProduct($sku){
         $product = ProductService::where('sku',$sku)->first();
+        if(!$product){
+            return $this->error("product not found",404);
+        }
+        return response()->json(['product'=>$product]);
+
+    }
+
+    public function getProductByName($name){
+        $product = ProductService::where('name',$name)->first();
         if(!$product){
             return $this->error("product not found",404);
         }
