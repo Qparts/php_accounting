@@ -177,7 +177,7 @@ class InvoiceController extends Controller
             {
                 $messages = $validator->getMessageBag();
 
-                return $this->error($messages);
+                return response()->json(['messages'=> $messages]);
             }
 
             $invoiceDue = Invoice::where('id', $request->credit_note['invoice_id'])->with('payments')->first();
@@ -217,11 +217,11 @@ class InvoiceController extends Controller
             $credit->save();
 
             Utility::userBalance('customer', $request->credit_note['contact_id'], $amount, 'credit');
-            return $this->success($credit,"Credit Note successfully created.");
+            return response()->json(['credit'=> $credit]);
         }
         else
         {
-            return $this->error("Permission denied.");
+            return response()->json(['message'=>"Permission denied."]);
         }
     }
 
@@ -235,6 +235,14 @@ class InvoiceController extends Controller
         }
 
         return $latest->invoice_id + 1;
+    }
+
+    public function getCustomerById($id){
+        $customer = Customer::where('id',$id)->where('created_by',Auth::user())->first();
+        if(!$customer){
+            return response()->json(['error'=>"no customer found"]);
+        }
+        return response()->json(['customer'=>$customer]);
     }
 
 
