@@ -51,7 +51,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('products', [ProductController::class, 'createProduct']);
     Route::post('categories', [ProductController::class, 'createCategory']);
     Route::get('products/{sku}', [ProductController::class, 'getProduct']);
-    Route::get('product-name/{name}', [ProductController::class, 'getProductByName']);
+    Route::get('category-name/{name}', [ProductController::class, 'getCategoryByName']);
 
     //user
     Route::post('register', [ApiController::class, 'register']);

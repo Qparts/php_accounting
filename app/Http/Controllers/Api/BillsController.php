@@ -136,8 +136,8 @@ class BillsController extends Controller
             $debit              = new DebitNote();
             $debit->bill        = $bill_id;
             $debit->vendor      = $bill->vender_id;
-            $debit->date        = $request->bill['allocations_attributes']['date'];
-            $debit->amount      = $request->bill['allocations_attributes']['amount'];
+            $debit->date        = $request->bill['allocations_attributes'][0]['date'];
+            $debit->amount      = $request->bill['allocations_attributes'][0]['amount'];
             $debit->description = "debit note";
             $debit->save();
             Utility::userBalance('vendor', $bill->vender_id, $request->amount, 'debit');

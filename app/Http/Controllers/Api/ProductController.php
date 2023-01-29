@@ -141,8 +141,8 @@ class ProductController extends Controller
 
     }
 
-    public function getProductByName($name){
-        $product = ProductService::where('name',$name)->first();
+    public function getCategoryByName($name){
+        $product = ProductServiceCategory::where('name',$name)->first();
         if(!$product){
             return $this->error("product not found",404);
         }
