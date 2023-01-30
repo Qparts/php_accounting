@@ -245,5 +245,46 @@ class InvoiceController extends Controller
         return response()->json(['customer'=>$customer]);
     }
 
+    public function refundCustomerPayment(Request $request,$id){
+        if(\Auth::user()->can('create credit note'))
+        {
+            $validator = \Validator::make(
+                $request->all(), [
+                    'invoice'=>[
+                        'allocations_attributes.amount' => 'required',
+                        'allocations_attributes.date' => 'required'
+                    ]
+                ]
+            );
+            if($validator->fails())
+            {
+                $messages = $validator->getMessageBag();
+
+                return response()->json(['messages'=>$messages]);
+
+            }
+            $invoice_id = $id;
+            $invoiceDue = Invoice::where('id', $invoice_id)->first();
+            if($request->amount > $invoiceDue->getDue())
+            {
+                return response()->json(['error'=>'Maximum ' . \Auth::user()->priceFormat($invoiceDue->getDue()) . ' credit limit of this invoice.']);
+            }
+            $invoice             = Invoice::where('id', $invoice_id)->first();
+            $credit              = new CreditNote();
+            $credit->invoice     = $invoice_id;
+            $credit->customer    = $invoice->customer_id;
+            $credit->date        =$request->invoice['allocations_attributes'][0]['date'];
+            $credit->amount      = $request->invoice['allocations_attributes'][0]['amount'];
+            $credit->description = "";
+            $credit->save();
+            Utility::userBalance('customer', $invoice->customer_id, $request->invoice['allocations_attributes'][0]['amount'], 'debit');
+            return response()->json(['credit'=>$credit]);
+        }
+        else
+        {
+            return response()->json(['error'=>'Permission denied.']);
+        }
+    }
+
 
 }

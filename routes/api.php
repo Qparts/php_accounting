@@ -42,10 +42,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('vendors', [VendorController::class, 'listVendors']);
     Route::get('vendor/{id}', [VendorController::class, 'getVendor']);
 
+    Route::post('purchases/debit-note', [VendorController::class, 'createDebitNote']);
+
     //invoice
     Route::post('invoice', [InvoiceController::class, 'createInvoice']);
     Route::post('sales/customer-payment', [InvoiceController::class, 'customerPayment']);
     Route::post('sales/credit-note', [InvoiceController::class, 'createCreditNote']);
+    Route::post('sales/refund-customer-payment/{id}', [InvoiceController::class, 'refundCustomerPayment']);
 
     Route::get('customer/{id}', [InvoiceController::class, 'getCustomerById']);
 
@@ -66,11 +69,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('adjust-inventory',[InventoryController::class,'purchaseProductsForInventory']);
 
     //bills
-    Route::post('bills',[BillsController::class,'store']);
+    Route::post('purchases/vendor-bill',[BillsController::class,'store']);
     Route::get('bills',[BillsController::class,'listBills']);
     Route::get('bill/{id}',[BillsController::class,'getBill']);
 
-    Route::post('bills/{id}/allocations ',[BillsController::class,'debitNote']);
+    Route::post('purchases/refund-vendor-payment/{id}',[BillsController::class,'debitNote']);
 
 
 });
