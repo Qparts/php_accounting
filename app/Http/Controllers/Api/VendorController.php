@@ -163,13 +163,13 @@ class VendorController extends Controller
                 }
                 $description = $item['description'];
                 $productService = ProductService::where('id',$item['product_id'])->first();
-                $productService->quantity = $productService->quantity + $item['quantity'];
+                $productService->quantity = $productService->quantity - $item['quantity'];
                 $productService->save();
             }
 
             if($request->amount > $billDue->getDue())
             {
-                return redirect()->back()->with('error', 'Maximum ' . \Auth::user()->priceFormat($billDue->getDue()) . ' credit limit of this bill.');
+                return response()->json(['error'=> 'Maximum ' . \Auth::user()->priceFormat($billDue->getDue()) . ' credit limit of this bill.']);
             }
             $bill               = Bill::where('id', $request->debit_note['bill_id'])->first();
             $debit              = new DebitNote();
