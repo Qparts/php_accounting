@@ -152,7 +152,6 @@ class ProductController extends Controller
 
     public function updateProduct(Request $request,$sku){
         $product = ProductService::where('sku','=',$sku)->first();
-        return $product;
         if(!$product){
             return response()->json(['error'=>"product not found"]);
 
