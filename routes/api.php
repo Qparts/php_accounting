@@ -58,6 +58,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('products/{sku}', [ProductController::class, 'getProduct']);
     Route::get('category-name/{name}', [ProductController::class, 'getCategoryByName']);
 
+    Route::put('product/{sku}', [ProductController::class, 'getCategoryByName']);
+
     //user
     Route::post('register', [ApiController::class, 'register']);
     Route::get('current-user', [ApiController::class, 'getDataFromLoggedInUser']);

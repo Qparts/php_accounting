@@ -149,4 +149,24 @@ class ProductController extends Controller
         return response()->json(['product'=>$product]);
 
     }
+
+    public function updateProduct(Request $request,$sku){
+        $product = ProductService::where('sku',$sku)->first();
+        if(!$product){
+            return response()->json(['error'=>"product not found"]);
+
+        }
+        $product->name           = $request->product['name_ar'] .' / '.$request->product['name_en'];
+        $product->description    = $request->product['description'];
+        $product->sku            = $request->product['sku'];
+        $product->sale_price     = $request->product['selling_price'];
+        $product->purchase_price = $request->product['buying_price'];
+        $product->tax_id         = $request->product['tax_id'] ?? NULL;
+        $product->unit_id        = $request->product['product_unit_type_id'];
+        $product->quantity        = $request->product['quantity'];
+        $product->save();
+
+        return response()->json(['product'=>$product]);
+
+    }
 }
