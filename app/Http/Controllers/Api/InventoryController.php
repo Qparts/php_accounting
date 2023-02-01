@@ -146,7 +146,9 @@ class InventoryController extends Controller
             {
                 $validator = \Validator::make(
                     $request->all(), [
-                        'name' => 'required',
+                        'inventory.name' => 'required',
+                        'inventory.name_ar' => 'required',
+                        'inventory.address' => 'required',
                     ]
                 );
                 if($validator->fails())
@@ -156,12 +158,12 @@ class InventoryController extends Controller
                     return response()->json(['message'=>$messages],409);
                 }
 
-                $warehouse->name       = $request->name;
-                $warehouse->address    = $request->address;
-                $warehouse->city       = $request->city;
-                $warehouse->city_zip   = $request->city_zip;
+                $warehouse->name       = $request->inventory['name'] . ' / ' . $request->inventory['name_ar'];
+                $warehouse->address    = $request->inventory['address']['shipping_address'];
+                $warehouse->city       = $request->inventory['address']['shipping_city'];
+                $warehouse->city_zip   = $request->inventory['address']['shipping_zip'];
                 $warehouse->save();
-                return response()->json(['message'=>"Warehouse successfully updated."]);
+                return response()->json(['inventory'=>$warehouse]);
             }
             else
             {
