@@ -67,6 +67,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('inventory',[InventoryController::class,'store']);
     Route::get('inventories',[InventoryController::class,'show']);
     Route::post('adjust-inventory',[InventoryController::class,'purchaseProductsForInventory']);
+    Route::put('inventory/{id}',[InventoryController::class,'updateInventory']);
 
     //bills
     Route::post('purchases/vendor-bill',[BillsController::class,'store']);

@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\CustomField;
+use App\Models\Invoice;
+use App\Models\InvoiceProduct;
 use App\Models\ProductService;
 use App\Models\Purchase;
 use App\Models\PurchaseProduct;
@@ -132,5 +135,42 @@ class InventoryController extends Controller
         }
 
         return $latest->purchase_id + 1;
+    }
+
+    public function updateInventory(Request $request, $id){
+
+        $warehouse = warehouse::where('id',$id)->first();
+        if(\Auth::user()->can('edit warehouse'))
+        {
+            if($warehouse->created_by == \Auth::user()->creatorId())
+            {
+                $validator = \Validator::make(
+                    $request->all(), [
+                        'name' => 'required',
+                    ]
+                );
+                if($validator->fails())
+                {
+                    $messages = $validator->getMessageBag();
+
+                    return response()->json(['message'=>$messages],409);
+                }
+
+                $warehouse->name       = $request->name;
+                $warehouse->address    = $request->address;
+                $warehouse->city       = $request->city;
+                $warehouse->city_zip   = $request->city_zip;
+                $warehouse->save();
+                return response()->json(['message'=>"Warehouse successfully updated."]);
+            }
+            else
+            {
+                return response()->json(['message'=>'Permission denied.',401]);
+            }
+        }
+        else
+        {
+            return response()->json(['message'=>'Permission denied.',401]);
+        }
     }
 }
