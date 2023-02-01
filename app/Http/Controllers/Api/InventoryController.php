@@ -142,6 +142,7 @@ class InventoryController extends Controller
         $warehouse = warehouse::where('id',$id)->first();
         if(\Auth::user()->can('edit warehouse'))
         {
+
             if($warehouse->created_by == \Auth::user()->creatorId())
             {
                 $validator = \Validator::make(
