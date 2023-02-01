@@ -163,7 +163,7 @@ class ProductController extends Controller
         $product->purchase_price = $request->product['buying_price'];
         $product->tax_id         = $request->product['tax_id'] ?? NULL;
         $product->unit_id        = $request->product['product_unit_type_id'];
-        $product->quantity        = $request->product['quantity'];
+        $product->quantity        = $request->product['track_quantity'];
         $product->save();
 
         return response()->json(['product'=>$product]);
