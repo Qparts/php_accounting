@@ -719,7 +719,6 @@ class BillController extends Controller
             {
                 $vendor = $bill->vender;
                 $iteams = $bill->items;
-
                 return view('bill.view', compact('bill', 'vendor', 'iteams'));
             }
             else

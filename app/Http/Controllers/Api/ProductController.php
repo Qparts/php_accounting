@@ -34,13 +34,11 @@ class ProductController extends Controller
                 return response()->json(['messages'=>$messages]);
             }
 
-            $category             = new ProductServiceCategory();
-            $category->name       = $request->category['name'];
-            $category->color      = $this->rand_color();
-            $category->type       = 0;
-            $category->created_by = \Auth::user()->creatorId();
-            $category->save();
-            return response()->json(['category'=>$category]);
+
+            $this->createCategoryByType(0,$request);
+            $this->createCategoryByType(1,$request);
+            $this->createCategoryByType(2,$request);
+            return response()->json(['category'=>'category created']);
         }
         else
         {
@@ -168,5 +166,47 @@ class ProductController extends Controller
 
         return response()->json(['product'=>$product]);
 
+    }
+
+    function createCategoryByType($type,$request){
+        $category             = new ProductServiceCategory();
+        $category->name       = $request->category['name'];
+        $category->color      = $this->rand_color();
+        $category->type       = $type;
+        $category->created_by = \Auth::user()->creatorId();
+        $category->save();
+    }
+
+    public function updateProductQuantity(Request $request, $sku)
+    {
+        if(\Auth::user()->can('edit product & service'))
+        {
+            $productService = ProductService::where('sku',$sku)->first();
+            $total = $productService->quantity + $request->quantity;
+
+            if($productService->created_by == \Auth::user()->creatorId())
+            {
+                $productService->quantity   = $total;
+                $productService->created_by = \Auth::user()->creatorId();
+                $productService->save();
+
+                //Product Stock Report
+                $type        = 'manually';
+                $type_id     = 0;
+                $description = $request->quantity . '  ' . __('quantity added by manually');
+                Utility::addProductStock($productService->id, $request->quantity, $type, $description, $type_id);
+
+
+                return response()->json(['product'=>$productService]);
+            }
+            else
+            {
+                return response()->json(['error'=>'Permission denied.'],401);
+            }
+        }
+        else
+        {
+            return response()->json(['error'=>'Permission denied.'],401);
+        }
     }
 }

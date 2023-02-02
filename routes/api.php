@@ -58,6 +58,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('products/{sku}', [ProductController::class, 'getProduct']);
     Route::get('category-name/{name}', [ProductController::class, 'getCategoryByName']);
 
+    Route::put('product/quantity/{sku}', [ProductController::class, 'updateProductQuantity']);
+
+
     Route::put('product/{sku}', [ProductController::class, 'updateProduct']);
 
     //user
@@ -71,12 +74,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('adjust-inventory',[InventoryController::class,'purchaseProductsForInventory']);
     Route::put('inventory/{id}',[InventoryController::class,'updateInventory']);
 
+
     //bills
     Route::post('purchases/vendor-bill',[BillsController::class,'store']);
     Route::get('bills',[BillsController::class,'listBills']);
     Route::get('bill/{id}',[BillsController::class,'getBill']);
 
     Route::post('purchases/refund-vendor-payment/{id}',[BillsController::class,'debitNote']);
+
+    Route::post('purchases/payment/{bill_id}',[BillsController::class,'createPayment']);
 
 
 });
