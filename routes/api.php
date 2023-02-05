@@ -42,7 +42,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('vendors', [VendorController::class, 'listVendors']);
     Route::get('vendor/{id}', [VendorController::class, 'getVendor']);
 
-    Route::post('purchases/debit-note', [VendorController::class, 'createDebitNote']);
+
 
     //invoice
     Route::post('invoice', [InvoiceController::class, 'createInvoice']);
@@ -82,7 +82,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('purchases/refund-vendor-payment/{id}',[BillsController::class,'debitNote']);
 
-    Route::post('purchases/payment/{bill_id}',[BillsController::class,'createPayment']);
+   // Route::post('purchases/payment/{bill_id}',[BillsController::class,'createPayment']);
+    Route::post('purchases/vendor-payment',[BillsController::class,'createPayment']);
+  //  Route::put('bill/{id}/update',[BillsController::clavendor-billss,'billReturns']); //TODO to be removed
 
+    Route::post('purchases/debit-note', [BillsController::class, 'createDebitNote']);
 
 });
