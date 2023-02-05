@@ -180,7 +180,7 @@ class InvoiceController extends Controller
                 return response()->json(['messages'=> $messages]);
             }
 
-            $invoiceDue = Invoice::where('id', $request->credit_note['invoice_id'])->with('payments')->first();
+            $invoiceDue = Invoice::where('invoice_id', $request->credit_note['invoice_id'])->with('payments')->first();
             $amount = 0.0;
            // $description = "";
             // get all products related to invoice
@@ -196,7 +196,7 @@ class InvoiceController extends Controller
                     $amount=$amount + $valueTobeSubtracted;
                 }
                 $description = $item['description'];
-                $productService = ProductService::where('id',$item['product_id'])->first();
+                $productService = ProductService::where('sku',$item['product_id'])->first();
                 $productService->quantity = $productService->quantity + $item['quantity'];
                 $productService->save();
             }
@@ -238,7 +238,7 @@ class InvoiceController extends Controller
     }
 
     public function getCustomerById($id){
-        $customer = Customer::where('id',$id)->where('created_by',Auth::user())->first();
+        $customer = Customer::where('customer_id',$id)->where('created_by',Auth::user())->first();
         if(!$customer){
             return response()->json(['error'=>"no customer found"]);
         }
@@ -264,12 +264,12 @@ class InvoiceController extends Controller
 
             }
             $invoice_id = $id;
-            $invoiceDue = Invoice::where('id', $invoice_id)->first();
+            $invoiceDue = Invoice::where('invoice_id', $invoice_id)->first();
             if($request->amount > $invoiceDue->getDue())
             {
                 return response()->json(['error'=>'Maximum ' . \Auth::user()->priceFormat($invoiceDue->getDue()) . ' credit limit of this invoice.']);
             }
-            $invoice             = Invoice::where('id', $invoice_id)->first();
+            $invoice             = Invoice::where('invoice_id', $invoice_id)->first();
             $credit              = new CreditNote();
             $credit->invoice     = $invoice_id;
             $credit->customer    = $invoice->customer_id;

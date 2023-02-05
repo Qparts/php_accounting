@@ -43,8 +43,8 @@ class CustomerController extends Controller
             if($total_customer < $plan->max_customers || $plan->max_customers == -1)
             {
                 $customer                  = new Customer();
-                $customer->customer_id     = $this->customerNumber();
-                $customer->name            = $request->contact['name'];
+                $customer->customer_id     = $request->contact['email'];
+                $customer->name            = $request->contact['organization'];
                 $customer->contact         = $request->contact['phone_number'];
                 $customer->email           = $request->contact['email'];
                 $customer->tax_number      =$request->contact['tax_number'];
@@ -80,16 +80,16 @@ class CustomerController extends Controller
         }
     }
 
-    function customerNumber()
-    {
-        $latest = Customer::where('created_by', '=', Auth::user()->creatorId())->latest()->first();
-        if(!$latest)
-        {
-            return 1;
-        }
-
-        return $latest->customer_id + 1;
-    }
+//    function customerNumber()
+//    {
+//        $latest = Customer::where('created_by', '=', Auth::user()->creatorId())->latest()->first();
+//        if(!$latest)
+//        {
+//            return 1;
+//        }
+//
+//        return $latest->customer_id + 1;
+//    }
 
 
 }

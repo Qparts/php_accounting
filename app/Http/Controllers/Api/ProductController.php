@@ -54,19 +54,13 @@ class ProductController extends Controller
         {
 
             $rules = [
-
-                'product.name_ar' => 'required',
-                'product.name_en' => 'required',
                 'product.sku'=>'required',
-                'product.description'=>'required',
-                'product.product_unit_type_id'=>'required',
                 'product.track_quantity'=>'required',
                 'product.buying_price'=>'required',
                 'product.expense_account_id'=>'required',
                 'product.sale_item'=>'required',
                 'product.selling_price'=>'required',
                 'product.sales_account_id'=>'required',
-                'product.tax_id'=>'required'
             ];
 
             $validator = \Validator::make($request->all(), $rules);

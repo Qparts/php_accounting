@@ -27,9 +27,10 @@ class BillsController extends Controller
             $validator = \Validator::make(
                 $request->all(), [
                     'bill.contact_id' => 'required',
+                    'bill.bill_id' => 'required',
                     'bill.issue_date' => 'required',
                     'bill.due_date' => 'required',
-                    'bill.category_id' => 'required',
+
                     'bill.line_items' => 'required',
                     'bill.status' => 'required'
                 ]
@@ -42,7 +43,8 @@ class BillsController extends Controller
 
             }
             $bill            = new Bill();
-            $bill->bill_id   = $this->billNumber();
+           // $bill->bill_id   = $this->billNumber();
+            $bill->bill_id   = $request->bill['bill_id'];
             $bill->vender_id = $request->bill['contact_id'];
             $bill->bill_date      = $request->bill['issue_date'];
             if($request->bill['status'] == "Approved"){
@@ -53,7 +55,7 @@ class BillsController extends Controller
 
             }
             $bill->due_date       = $request->bill['due_date'];
-            $bill->category_id    = $request->bill['category_id'];
+            $bill->category_id    = 1;
             $bill->send_date      = date('Y-m-d');
             $bill->order_number   = !empty($request->bill['reference']) ? $request->bill['reference'] : 0;
             $bill->created_by     = \Auth::user()->creatorId();
@@ -114,7 +116,7 @@ class BillsController extends Controller
     }
 
     public function getBill($id){
-        $bill = Bill::where('created_by',Auth::user()->id)->where('id',$id)->first();
+        $bill = Bill::where('created_by',Auth::user()->id)->where('bill_id',$id)->first();
         if(!$bill){
             return response()->json(['message'=>"no bill found"]);
         }
@@ -146,7 +148,7 @@ class BillsController extends Controller
             {
                 return response()->json(['error'=>'Maximum ' . \Auth::user()->priceFormat($billDue->getDue()) . ' credit limit of this bill.']);
             }
-            $bill               = Bill::where('id', $bill_id)->first();
+            $bill               = Bill::where('bill_id', $bill_id)->first();
             $debit              = new DebitNote();
             $debit->bill        = $bill_id;
             $debit->vendor      = $bill->vender_id;
@@ -224,7 +226,7 @@ class BillsController extends Controller
             $billPayment->account    = $account->id;
             Transaction::addTransaction($billPayment);
 
-            $vender = Vender::where('id', $bill->vender_id)->first();
+            $vender = Vender::where('vender_id', $bill->vender_id)->first();
 
             $payment         = new BillPayment();
             $payment->name   = $vender['name'];
@@ -342,7 +344,7 @@ class BillsController extends Controller
 
                 return response()->json(['messages'=> $messages]);
             }
-            $billDue = Bill::where('id', $request->debit_note['bill_id'])->first();
+            $billDue = Bill::where('bill_id', $request->debit_note['bill_id'])->first();
             $amount = 0.0;
             // get all products related to invoice
             $productsInBill = BillProduct::where('bill_id',$request->debit_note['bill_id'])->get(['product_id']);
@@ -358,7 +360,7 @@ class BillsController extends Controller
                 }
 
                 $description = $item['description'];
-                $productService = ProductService::where('id',$item['product_id'])->first();
+                $productService = ProductService::where('sku',$item['product_id'])->first();
                 $productService->quantity = $productService->quantity - $item['quantity'];
                 $productService->save();
                 $billProduct = BillProduct::where('bill_id',$request->debit_note['bill_id'])->where('product_id',$item['product_id'])->first();
@@ -371,7 +373,7 @@ class BillsController extends Controller
             {
                 return response()->json(['error'=> 'Maximum ' . \Auth::user()->priceFormat($billDue->getDue()) . ' credit limit of this bill.']);
             }
-            $bill               = Bill::where('id', $request->debit_note['bill_id'])->first();
+            $bill               = Bill::where('bill_id', $request->debit_note['bill_id'])->first();
             $debit              = new DebitNote();
             $debit->bill        = $request->debit_note['bill_id'];
             $debit->vendor      = $bill->vender_id;

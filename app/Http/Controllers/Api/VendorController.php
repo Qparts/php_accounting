@@ -56,7 +56,7 @@ class VendorController extends Controller
             if($total_vendor < $plan->max_venders || $plan->max_venders == -1)
             {
                 $vender                   = new Vender();
-                $vender->vender_id        = $this->venderNumber();
+                $vender->vender_id        = $request->contact['organization'];
                 $vender->name             = $request->contact['name'];
                 $vender->contact          = $request->contact['phone_number'];
                 $vender->email            = $request->contact['email'];
@@ -111,7 +111,7 @@ class VendorController extends Controller
     }
 
     public function getVendor($id){
-        $vendor = Vender::where('id',$id)->where('created_by',Auth::user()->id)->first();
+        $vendor = Vender::where('vender_id',$id)->where('created_by',Auth::user()->id)->first();
         if(!$vendor){
             return response()->json(['message'=>"no vendor found"]);
         }
