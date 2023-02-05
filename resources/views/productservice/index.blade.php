@@ -89,12 +89,14 @@
                                             @php
                                                 $taxes=\App\Models\Utility::tax($productService->tax_id);
                                             @endphp
-                                            @if(!empty($taxes))
-                                            @foreach($taxes as $tax)
-                                                <span class="">{{$tax->name .' ('.$tax->rate .'%)'}}</span><br>
 
-                                            @endforeach
-                                            @endif
+{{--                                            @if(!empty($taxes))--}}
+{{--                                            @foreach($taxes as $tax)--}}
+{{--                                                <span class="">{{$tax->name .' ('.$tax->rate .'%)'}}</span><br>--}}
+
+{{--                                            @endforeach--}}
+{{--                                            @endif--}}
+
                                         @else
                                             -
                                         @endif
