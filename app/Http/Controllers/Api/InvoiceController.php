@@ -141,7 +141,7 @@ class InvoiceController extends Controller
             $payment->name    = !empty($customer) ? $customer['name'] : '';
             $payment->date    = \Auth::user()->dateFormat($request->invoice_payment['date']);
             $payment->amount  = \Auth::user()->priceFormat($request->invoice_payment['amount']);
-            $payment->invoice = '';
+            $payment->invoice = $request->invoice_payment['reference'];
 
             if(!empty($customer))
             {
