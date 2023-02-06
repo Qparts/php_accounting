@@ -43,8 +43,8 @@ class CustomerController extends Controller
             if($total_customer < $plan->max_customers || $plan->max_customers == -1)
             {
                 $customer                  = new Customer();
-                $customer->customer_id     = $request->contact['email'];
-                $customer->name            = $request->contact['organization'];
+                $customer->customer_id     = $request->contact['organization'];
+                $customer->name            = $request->contact['name'];
                 $customer->contact         = $request->contact['phone_number'];
                 $customer->email           = $request->contact['email'];
                 $customer->tax_number      =$request->contact['tax_number'];
