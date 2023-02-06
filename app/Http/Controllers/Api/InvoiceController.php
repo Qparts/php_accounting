@@ -124,13 +124,13 @@ class InvoiceController extends Controller
 
             $revenue->created_by     = \Auth::user()->creatorId();
             $revenue->save();
-
             $category            = ProductServiceCategory::where('id', $request->invoice_payment['category_id'])->first();
 
 
             $revenue->payment_id = $revenue->id;
             $revenue->type       = 'Revenue';
-            $revenue->category   = $category->name;
+           // $revenue->category   = $category->name;
+            $revenue->category   = 1; //TODO to be removed
             $revenue->user_id    = $revenue->customer_id;
             $revenue->user_type  = 'Customer';
             $revenue->account    = $request->invoice_payment['account_id'];
