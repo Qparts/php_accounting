@@ -36,6 +36,7 @@ class InvoiceController extends Controller
                     'invoice.issue_date' => 'required',
                     'invoice.due_date' => 'required',
                     'invoice.status' => 'required',
+                    'invoice.invoice_id' => 'required',
                     'invoice.inventory_id' => 'required',
                     'invoice.line_items' => 'required'
                 ]
@@ -48,15 +49,13 @@ class InvoiceController extends Controller
             }
 
             $invoice                 = new Invoice();
-            $invoice->invoice_id     = $this->invoiceNumber();
-           // $invoice->customer_id    = $request->customer_id;
+            $invoice->invoice_id     = $request->invoice['invoice_id'];
             $invoice->customer_id    = $request->invoice['contact_id'];
             $invoice->status         = 0;
             $invoice->issue_date     = $request->invoice['issue_date'];
             $invoice->send_date     = $request->invoice['issue_date'];
             $invoice->due_date       = $request->invoice['due_date'];
             $invoice->category_id    = $request->invoice['inventory_id'];
-            //$invoice->ref_number     = $request->ref_number;
             $invoice->ref_number     = $request->invoice['reference'];
             $invoice->created_by     = Auth::user()->creatorId();
             $invoice->save();
@@ -64,10 +63,10 @@ class InvoiceController extends Controller
             $products = $request->invoice['line_items'];
             for($i = 0; $i < count($products); $i++)
             {
-
+                $productBySKU = ProductService::where('sku',$products[$i]['product_id'])->first();
                 $invoiceProduct              = new InvoiceProduct();
                 $invoiceProduct->invoice_id  = $invoice->id;
-                $invoiceProduct->product_id  = $products[$i]['product_id'];
+                $invoiceProduct->product_id  = $productBySKU->id;
                 $invoiceProduct->quantity    = $products[$i]['quantity'];
                 $invoiceProduct->tax         = $products[$i]['tax_percent'];
                 $invoiceProduct->discount    = $products[$i]['discount'];
@@ -136,7 +135,7 @@ class InvoiceController extends Controller
             $revenue->account    = $request->invoice_payment['account_id'];
             Transaction::addTransaction($revenue);
 
-            $customer         = Customer::where('id', $request->invoice_payment['customer_id'])->first();
+            $customer         = Customer::where('customer_id', $request->invoice_payment['customer_id'])->first();
             $payment          = new InvoicePayment();
             $payment->name    = !empty($customer) ? $customer['name'] : '';
             $payment->date    = \Auth::user()->dateFormat($request->invoice_payment['date']);
@@ -145,7 +144,7 @@ class InvoiceController extends Controller
 
             if(!empty($customer))
             {
-                Utility::userBalance('customer', $customer->id, $revenue->amount, 'credit');
+                Utility::userBalance('customer', $request->invoice_payment['customer_id'], $revenue->amount, 'credit');
             }
 
             Utility::bankAccountBalance($request->invoice_payment['account_id'], $revenue->amount, 'credit');

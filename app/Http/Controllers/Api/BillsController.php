@@ -51,9 +51,9 @@ class BillsController extends Controller
                 $bill->status         = 2;
             }
 
-            if($request->bill['issue_date'] == $request->bill['due_date']){
-
-            }
+//            if($request->bill['issue_date'] == $request->bill['due_date']){
+//
+//            }
             $bill->due_date       = $request->bill['due_date'];
             $bill->category_id    = 1;
             $bill->send_date      = date('Y-m-d');
@@ -65,24 +65,25 @@ class BillsController extends Controller
 
             for($i = 0; $i < count($products); $i++)
             {
+                $productBySKU = ProductService::where('sku',$products[$i]['product_id'])->first();
                 $billProduct              = new BillProduct();
-                $billProduct->bill_id     = $bill->id;
-                $billProduct->product_id  = $products[$i]['product_id'];
+                $billProduct->bill_id     = $bill->bill_id;
+                $billProduct->product_id  = $productBySKU->id;
                 $billProduct->quantity    = $products[$i]['quantity'];
-                $billProduct->tax         = $products[$i]['tax_percent'];
+                $billProduct->tax         = $products[$i]['tax_percent'] ?? NULL;
                 $billProduct->discount    = $products[$i]['discount'];
                 $billProduct->price       = $products[$i]['unit_price'];
                 $billProduct->description = $products[$i]['description'];
                 $billProduct->save();
                 //inventory management (Quantity)
-                Utility::total_quantity("plus",$products[$i]['quantity'],$products[$i]['product_id']);
+                Utility::total_quantity("plus",$products[$i]['quantity'],$productBySKU->id);
 
                 //Product Stock Report
                 $type='bill';
                 $type_id = $bill->id;
 
                 $description=$products[$i]['quantity'].'  '.__(' quantity purchase in bill').' '. \Auth::user()->billNumberFormat($bill->bill_id);
-                Utility::addProductStock( $products[$i]['product_id'],$products[$i]['quantity'],$type,$description,$type_id);
+                Utility::addProductStock( $productBySKU->id,$products[$i]['quantity'],$type,$description,$type_id);
 
             }
             return response()->json(['bill'=>$bill]);
@@ -352,7 +353,6 @@ class BillsController extends Controller
             foreach($productsInBill as $pr){
                 array_push($productsInBillArray,$pr['product_id']);
             }
-
             foreach ($request->debit_note['line_items'] as $item){
                 if(in_array($item['product_id'],$productsInBillArray)){
                     $valueTobeSubtracted = $item['quantity']*$item['unit_price']; // number of items * price of each item
@@ -363,7 +363,7 @@ class BillsController extends Controller
                 $productService = ProductService::where('sku',$item['product_id'])->first();
                 $productService->quantity = $productService->quantity - $item['quantity'];
                 $productService->save();
-                $billProduct = BillProduct::where('bill_id',$request->debit_note['bill_id'])->where('product_id',$item['product_id'])->first();
+                $billProduct = BillProduct::where('bill_id',$request->debit_note['bill_id'])->where('product_id',$productService->id)->first();
                 $billProduct->quantity = $item['quantity'];
                 $billProduct->price = $item['unit_price'];
                 $billProduct->save();
