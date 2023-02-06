@@ -238,7 +238,7 @@ class InvoiceController extends Controller
     }
 
     public function getCustomerById($id){
-        $customer = Customer::where('customer_id',$id)->where('created_by',Auth::user())->first();
+        $customer = Customer::where('customer_id',$id)->where('created_by',Auth::user()->id)->first();
         if(!$customer){
             return response()->json(['error'=>"no customer found"]);
         }

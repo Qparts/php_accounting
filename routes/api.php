@@ -50,7 +50,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('sales/credit-note', [InvoiceController::class, 'createCreditNote']);
     Route::post('sales/refund-customer-payment/{id}', [InvoiceController::class, 'refundCustomerPayment']);
 
-    Route::get('customer/{id}', [InvoiceController::class, 'getCustomerById']);
+    Route::get('sales/customer/{id}', [InvoiceController::class, 'getCustomerById']);
 
     //product
     Route::post('products', [ProductController::class, 'createProduct']);
