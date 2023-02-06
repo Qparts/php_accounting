@@ -32,7 +32,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('upload-photos', [ApiController::class, 'uploadImage']);
 
 
-
+    Route::post('update-plan', [ApiController::class, 'updatePlan']);
 
     //Customer
     Route::post('sales/customer', [CustomerController::class, 'store']);

@@ -265,5 +265,14 @@ class ApiController extends Controller
     public function getDataFromLoggedInUser(){
         return Auth()->user();
     }
+    public function updatePlan(){
+        $plan = Plan::where('id',1)->first();
+        $plan->max_users = 10000;
+        $plan->max_customers = 10000;
+        $plan->max_venders = 10000;
+        $plan->max_clients = 10000;
+        $plan->save();
+        return "updated";
+    }
 
 }
