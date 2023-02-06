@@ -49,7 +49,8 @@ class InvoiceController extends Controller
             }
 
             $invoice                 = new Invoice();
-            $invoice->invoice_id     = $request->invoice['invoice_id'];
+        //    $invoice->invoice_id     = $request->invoice['invoice_id'];
+            $invoice->invoice_id     = $request->invoice['reference'];
             $invoice->customer_id    = $request->invoice['contact_id'];
             $invoice->status         = 0;
             $invoice->issue_date     = $request->invoice['issue_date'];
