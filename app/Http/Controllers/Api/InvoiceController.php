@@ -35,7 +35,6 @@ class InvoiceController extends Controller
                     'invoice.issue_date' => 'required',
                     'invoice.due_date' => 'required',
                     'invoice.status' => 'required',
-                    'invoice.invoice_id' => 'required',
                    // 'invoice.inventory_id' => 'required',
                     'invoice.line_items' => 'required'
                 ]
@@ -48,10 +47,14 @@ class InvoiceController extends Controller
             }
 
             $invoice                 = new Invoice();
-        //    $invoice->invoice_id     = $request->invoice['invoice_id'];
             $invoice->invoice_id     = $request->invoice['reference'];
             $invoice->customer_id    = $request->invoice['contact_id'];
-            $invoice->status         = 0;
+            if($request->invoice['status']=="Approved"){
+                $invoice->status         = 4;
+            }else{
+                $invoice->status         = 2;
+            }
+
             $invoice->issue_date     = $request->invoice['issue_date'];
             $invoice->send_date     = $request->invoice['issue_date'];
             $invoice->due_date       = $request->invoice['due_date'];
