@@ -51,12 +51,10 @@ class BillsController extends Controller
             $bill->vender_id = $request->bill['contact_id'];
             $bill->bill_date      = $request->bill['issue_date'];
             if($request->bill['status'] == "Approved"){
+                $bill->status         = 4;
+            }else{
                 $bill->status         = 2;
             }
-
-//            if($request->bill['issue_date'] == $request->bill['due_date']){
-//
-//            }
             $bill->due_date       = $request->bill['due_date'];
             $bill->category_id    = 1;
             $bill->send_date      = date('Y-m-d');
