@@ -447,25 +447,25 @@
                                                 $taxesData=[];
                                             @endphp
                                             @foreach($iteams as $key =>$iteam)
-{{--                                                @if(!empty($iteam->tax))--}}
-{{--                                                    @php--}}
-{{--                                                        $taxes=App\Models\Utility::tax($iteam->tax);--}}
-{{--                                                        $totalQuantity+=$iteam->quantity;--}}
-{{--                                                        $totalRate+=$iteam->price;--}}
-{{--                                                        $totalDiscount+=$iteam->discount;--}}
-{{--                                                        foreach($taxes as $taxe){--}}
-{{--                                                            $taxDataPrice=App\Models\Utility::taxRate($taxe->rate,$iteam->price,$iteam->quantity);--}}
-{{--                                                            if (array_key_exists($taxe->name,$taxesData))--}}
-{{--                                                            {--}}
-{{--                                                                $taxesData[$taxe->name] = $taxesData[$taxe->name]+$taxDataPrice;--}}
-{{--                                                            }--}}
-{{--                                                            else--}}
-{{--                                                            {--}}
-{{--                                                                $taxesData[$taxe->name] = $taxDataPrice;--}}
-{{--                                                            }--}}
-{{--                                                        }--}}
-{{--                                                    @endphp--}}
-{{--                                                @endif--}}
+                                                @if(!empty($iteam->tax))
+                                                    @php
+                                                        $taxes=App\Models\Utility::tax($iteam->tax);
+                                                        $totalQuantity+=$iteam->quantity;
+                                                        $totalRate+=$iteam->price;
+                                                        $totalDiscount+=$iteam->discount;
+                                                        foreach($taxes as $taxe){
+                                                            $taxDataPrice=App\Models\Utility::taxRate($taxe->rate,$iteam->price,$iteam->quantity);
+                                                            if (array_key_exists($taxe->name,$taxesData))
+                                                            {
+                                                                $taxesData[$taxe->name] = $taxesData[$taxe->name]+$taxDataPrice;
+                                                            }
+                                                            else
+                                                            {
+                                                                $taxesData[$taxe->name] = $taxDataPrice;
+                                                            }
+                                                        }
+                                                    @endphp
+                                                @endif
                                                 <tr>
                                                     <td>{{$key+1}}</td>
                                                     <td>{{!empty($iteam->product())?$iteam->product()->name:''}}</td>
