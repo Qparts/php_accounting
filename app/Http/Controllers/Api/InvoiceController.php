@@ -32,7 +32,6 @@ class InvoiceController extends Controller
                  $request->all(), [
                     'invoice.contact_id' => 'required',
                     'invoice.reference' => 'required',
-                    'invoice.description' => 'required',
                     'invoice.issue_date' => 'required',
                     'invoice.due_date' => 'required',
                     'invoice.status' => 'required',
@@ -73,7 +72,7 @@ class InvoiceController extends Controller
                 $invoiceProduct->tax         = 0;
                 $invoiceProduct->discount    = $products[$i]['discount'];
                 $invoiceProduct->price       = $products[$i]['unit_price'];
-                $invoiceProduct->description = $products[$i]['description'];
+                $invoiceProduct->description = $products[$i]['description'] ?? " " ;
                 $invoiceProduct->save();
                 //inventory management (Quantity)
                 Utility::total_quantity('minus',$invoiceProduct->quantity,$invoiceProduct->product_id);
@@ -199,7 +198,7 @@ class InvoiceController extends Controller
                     $valueTobeSubtracted = $item['quantity']*$item['unit_price']; // number of items * price of each item
                     $amount=$amount + $valueTobeSubtracted;
                 }
-                $description = $item['description'];
+                $description = $item['description'] ?? " ";
                 $productService = ProductService::where('sku',$item['product_id'])->first();
                 $productService->quantity = $productService->quantity + $item['quantity'];
                 $productService->save();
@@ -218,7 +217,7 @@ class InvoiceController extends Controller
             $credit->customer    = $request->credit_note['contact_id'];
             $credit->date        = $request->credit_note['issue_date'];
             $credit->amount      = $amount;
-            $credit->description = $description;
+            $credit->description = $description ?? " ";
             $credit->save();
 
             Utility::userBalance('customer', $request->credit_note['contact_id'], $amount, 'credit');
