@@ -37,7 +37,7 @@ class InvoiceController extends Controller
                     'invoice.due_date' => 'required',
                     'invoice.status' => 'required',
                     'invoice.invoice_id' => 'required',
-                    'invoice.inventory_id' => 'required',
+                   // 'invoice.inventory_id' => 'required',
                     'invoice.line_items' => 'required'
                 ]
 
@@ -168,7 +168,7 @@ class InvoiceController extends Controller
                     'credit_note.contact_id' => 'required',
                     'credit_note.issue_date' => 'required',
                     'credit_note.status' => 'required',
-                    'credit_note.inventory_id' => 'required',
+                   // 'credit_note.inventory_id' => 'required',
                     'credit_note.invoice_id' => 'required',
                     'credit_note.line_items'=>'required',
                    // 'credit_note.description'=>'required'
@@ -182,17 +182,20 @@ class InvoiceController extends Controller
             }
 
             $invoiceDue = Invoice::where('invoice_id', $request->credit_note['invoice_id'])->with('payments')->first();
+
+
             $amount = 0.0;
            // $description = "";
             // get all products related to invoice
-            $productsInInvoice = InvoiceProduct::where('invoice_id',$request->credit_note['invoice_id'])->get(['product_id']);
+            $productsInInvoice = InvoiceProduct::where('invoice_id',$invoiceDue->id)->get(['product_id']);
             $productsInInvoiceArray = [];
             foreach($productsInInvoice as $pr){
                 array_push($productsInInvoiceArray,$pr['product_id']);
             }
 
             foreach ($request->credit_note['line_items'] as $item){
-                if(in_array($item['product_id'],$productsInInvoiceArray)){
+                $productItem = ProductService::where('sku',$item['product_id'])->first();
+                if(in_array($productItem->id,$productsInInvoiceArray)){
                     $valueTobeSubtracted = $item['quantity']*$item['unit_price']; // number of items * price of each item
                     $amount=$amount + $valueTobeSubtracted;
                 }
@@ -210,7 +213,8 @@ class InvoiceController extends Controller
             $invoice = $invoiceDue;
 
             $credit              = new CreditNote();
-            $credit->invoice     = $request->credit_note['invoice_id'];
+         //   $credit->invoice     = $request->credit_note['invoice_id'];
+            $credit->invoice     = $invoiceDue->id;
             $credit->customer    = $request->credit_note['contact_id'];
             $credit->date        = $request->credit_note['issue_date'];
             $credit->amount      = $amount;

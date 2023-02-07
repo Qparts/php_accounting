@@ -459,7 +459,8 @@
                                                         $totalQuantity+=$iteam->quantity;
                                                         $totalRate+=$iteam->price;
                                                         $totalDiscount+=$iteam->discount;
-                                                        foreach($taxes as $taxe){
+                                                        if($taxes){
+                                                            foreach($taxes as $taxe){
                                                             $taxDataPrice=App\Models\Utility::taxRate($taxe->rate,$iteam->price,$iteam->quantity);
                                                             if (array_key_exists($taxe->name,$taxesData))
                                                             {
@@ -470,6 +471,8 @@
                                                                 $taxesData[$taxe->name] = $taxDataPrice;
                                                             }
                                                         }
+                                                        }
+
                                                     ?>
                                                 <?php endif; ?>
                                                 <tr>
@@ -484,11 +487,13 @@
                                                                 <?php $totalTaxRate = 0;?>
                                                                 <?php $__currentLoopData = $taxes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tax): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                                     <?php
-                                                                        $taxPrice=App\Models\Utility::taxRate($tax->rate,$iteam->price,$iteam->quantity);
+                                                                       // $taxPrice=App\Models\Utility::taxRate($tax->rate,$iteam->price,$iteam->quantity);
+                                                                        $taxPrice=App\Models\Utility::taxRate(0,$iteam->price,$iteam->quantity);
                                                                         $totalTaxPrice+=$taxPrice;
                                                                     ?>
                                                                     <tr>
-                                                                        <td><?php echo e($tax->name .' ('.$tax->rate .'%)'); ?></td>
+
+                                                                        <td><?php echo e($tax->name .' ('.'0' .'%)'); ?></td>
                                                                         <td><?php echo e(\Auth::user()->priceFormat($taxPrice)); ?></td>
                                                                     </tr>
                                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
