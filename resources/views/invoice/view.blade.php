@@ -483,7 +483,8 @@
                                                                         $totalTaxPrice+=$taxPrice;
                                                                     @endphp
                                                                     <tr>
-                                                                        <td>{{$tax->name .' ('.$tax->rate .'%)'}}</td>
+{{--                                                                        <td>{{$tax->name .' ('.$tax->rate .'%)'}}</td>--}}
+                                                                        <td>{{$tax->name .' ('.'0' .'%)'}}</td>
                                                                         <td>{{\Auth::user()->priceFormat($taxPrice)}}</td>
                                                                     </tr>
                                                                 @endforeach
