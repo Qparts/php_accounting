@@ -266,6 +266,7 @@ class InvoiceController extends Controller
             }
             $invoice_id = $id;
             $invoiceDue = Invoice::where('invoice_id', $invoice_id)->first();
+            dd($invoiceDue->getDue());
             if($request->amount > $invoiceDue->getDue())
             {
                 return response()->json(['error'=>'Maximum ' . \Auth::user()->priceFormat($invoiceDue->getDue()) . ' credit limit of this invoice.']);
