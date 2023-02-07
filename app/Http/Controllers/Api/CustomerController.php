@@ -32,7 +32,7 @@ class CustomerController extends Controller
             if($validator->fails())
             {
                 $messages = $validator->getMessageBag();
-                return response()->json(['error'=>$messages]);
+                return response()->json(['error'=>$messages],401);
 
             }
             $customerExists = Customer::where('customer_id',$request->contact['organization'])->first();
