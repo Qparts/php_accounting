@@ -116,7 +116,7 @@ class InvoiceController extends Controller
             $revenue                 = new Revenue();
             $revenue->date           = $request->invoice_payment['date'];
             $revenue->amount         = $request->invoice_payment['amount'];
-            $revenue->account_id     = $request->invoice_payment['account_id'];
+            $revenue->account_id     = 2;
             $revenue->customer_id    = $request->invoice_payment['customer_id'];
             $revenue->category_id    = $request->invoice_payment['category_id']?? 0;
             $revenue->payment_method = 0;
@@ -133,7 +133,7 @@ class InvoiceController extends Controller
             $revenue->category   = 1; //TODO to be removed
             $revenue->user_id    = $revenue->customer_id;
             $revenue->user_type  = 'Customer';
-            $revenue->account    = $request->invoice_payment['account_id'];
+            $revenue->account    = 2;
             Transaction::addTransaction($revenue);
 
             $customer         = Customer::where('customer_id', $request->invoice_payment['customer_id'])->first();
