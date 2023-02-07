@@ -270,14 +270,15 @@ class InvoiceController extends Controller
             }
             $invoice_id = $id;
             $invoiceDue = Invoice::where('invoice_id', $invoice_id)->first();
+
             if($request->amount > $invoiceDue->getDue())
             {
                 return response()->json(['error'=>'Maximum ' . \Auth::user()->priceFormat($invoiceDue->getDue()) . ' credit limit of this invoice.']);
             }
             $invoice             = Invoice::where('invoice_id', $invoice_id)->first();
             $credit              = new CreditNote();
-            $credit->invoice     = $invoice_id;
-            $credit->customer    = $invoice->customer_id;
+            $credit->invoice     = $invoiceDue->id;
+            $credit->customer    = $invoiceDue->customer_id;
             $credit->date        =$request->invoice['allocations_attributes'][0]['date'];
             $credit->amount      = $request->invoice['allocations_attributes'][0]['amount'];
             $credit->description = "";
