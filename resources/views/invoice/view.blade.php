@@ -453,7 +453,8 @@
                                                         $totalQuantity+=$iteam->quantity;
                                                         $totalRate+=$iteam->price;
                                                         $totalDiscount+=$iteam->discount;
-                                                        foreach($taxes as $taxe){
+                                                        if($taxes){
+                                                            foreach($taxes as $taxe){
                                                             $taxDataPrice=App\Models\Utility::taxRate($taxe->rate,$iteam->price,$iteam->quantity);
                                                             if (array_key_exists($taxe->name,$taxesData))
                                                             {
@@ -464,6 +465,8 @@
                                                                 $taxesData[$taxe->name] = $taxDataPrice;
                                                             }
                                                         }
+                                                        }
+
                                                     @endphp
                                                 @endif
                                                 <tr>
