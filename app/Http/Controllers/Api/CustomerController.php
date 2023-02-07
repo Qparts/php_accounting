@@ -32,9 +32,13 @@ class CustomerController extends Controller
             if($validator->fails())
             {
                 $messages = $validator->getMessageBag();
-                return $this->error($messages,409);
-            }
+                return response()->json(['error'=>$messages]);
 
+            }
+            $customerExists = Customer::where('customer_id',$request->contact['organization'])->first();
+            if($customerExists){
+                return response()->json(['error'=>"customer already exists"]);
+            }
             $objCustomer    = Auth::user();
             $creator        = User::find($objCustomer->creatorId());
             $total_customer = $objCustomer->countCustomers();
