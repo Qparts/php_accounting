@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\BankAccount;
 use App\Models\CreditNote;
 use App\Models\Customer;
 use App\Models\CustomField;
@@ -103,8 +104,6 @@ class InvoiceController extends Controller
             $validator = \Validator::make(
                 $request->all(), [
                 'invoice_payment.reference'=>'required',
-                'invoice_payment.invoice_id'=>'required',
-                'invoice_payment.account_id'=>'required',
                 'invoice_payment.date'=>'required',
                 'invoice_payment.amount'=>'required',
                 ]
@@ -115,19 +114,25 @@ class InvoiceController extends Controller
 
                 return $this->error($messages,409);
             }
+            $invoice     = Invoice::where('invoice_id',$request->invoice_payment['reference'])->first();
+            if(!$invoice){
+                return $this->error("invoice not found",404);
+
+            }
+            $bankAccount = BankAccount::where('created_by',Auth::user()->id)->first();
 
             $revenue                 = new Revenue();
             $revenue->date           = $request->invoice_payment['date'];
             $revenue->amount         = $request->invoice_payment['amount'];
-            $revenue->account_id     = 2;
-            $revenue->customer_id    = $request->invoice_payment['customer_id'];
-            $revenue->category_id    = $request->invoice_payment['category_id']?? 0;
+            $revenue->account_id     = $bankAccount->id;
+            $revenue->customer_id    = $invoice->customer_id;
+            $revenue->category_id    = $request->invoice_payment['category_id']?? 1;
             $revenue->payment_method = 0;
             $revenue->reference      = $request->invoice_payment['reference'];
 
             $revenue->created_by     = \Auth::user()->creatorId();
             $revenue->save();
-            $category            = ProductServiceCategory::where('id', $request->invoice_payment['category_id'])->first();
+        //    $category            = ProductServiceCategory::where('id', $request->invoice_payment['category_id'])->first();
 
 
             $revenue->payment_id = $revenue->id;
@@ -136,10 +141,10 @@ class InvoiceController extends Controller
             $revenue->category   = 1; //TODO to be removed
             $revenue->user_id    = $revenue->customer_id;
             $revenue->user_type  = 'Customer';
-            $revenue->account    = 2;
+            $revenue->account    = $bankAccount->id;
             Transaction::addTransaction($revenue);
 
-            $customer         = Customer::where('customer_id', $request->invoice_payment['customer_id'])->first();
+            $customer         = Customer::where('customer_id', $invoice->customer_id)->first();
             $payment          = new InvoicePayment();
             $payment->name    = !empty($customer) ? $customer['name'] : '';
             $payment->date    = \Auth::user()->dateFormat($request->invoice_payment['date']);
@@ -148,10 +153,10 @@ class InvoiceController extends Controller
 
             if(!empty($customer))
             {
-                Utility::userBalance('customer', $request->invoice_payment['customer_id'], $revenue->amount, 'credit');
+                Utility::userBalance('customer', $invoice->customer_id, $revenue->amount, 'credit');
             }
 
-            Utility::bankAccountBalance($request->invoice_payment['account_id'], $revenue->amount, 'credit');
+            Utility::bankAccountBalance( $bankAccount->id, $revenue->amount, 'credit');
 
             return $this->success($revenue,"success");
         }
