@@ -478,7 +478,8 @@
                                                                 @php $totalTaxRate = 0;@endphp
                                                                 @foreach($taxes as $tax)
                                                                     @php
-                                                                        $taxPrice=App\Models\Utility::taxRate($tax->rate,$iteam->price,$iteam->quantity);
+                                                                       // $taxPrice=App\Models\Utility::taxRate($tax->rate,$iteam->price,$iteam->quantity);
+                                                                        $taxPrice=App\Models\Utility::taxRate(0,$iteam->price,$iteam->quantity);
                                                                         $totalTaxPrice+=$taxPrice;
                                                                     @endphp
                                                                     <tr>
