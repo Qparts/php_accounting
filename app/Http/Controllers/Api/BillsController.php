@@ -68,7 +68,7 @@ class BillsController extends Controller
             {
                 $productBySKU = ProductService::where('sku',$products[$i]['product_id'])->first();
                 $billProduct              = new BillProduct();
-                $billProduct->bill_id     = $bill->bill_id;
+                $billProduct->bill_id     = $bill->id;
                 $billProduct->product_id  = $productBySKU->id;
                 $billProduct->quantity    = $products[$i]['quantity'];
                 $billProduct->tax         = $products[$i]['tax_percent'] ?? NULL;
