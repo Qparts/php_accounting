@@ -289,6 +289,10 @@ class BillsController extends Controller
 
               //  $description = $item['description'];
                 $productService = ProductService::where('sku',$item['product_id'])->first();
+                if(!$productService){
+                    return response()->json(['messages'=> "product not found"]);
+
+                }
                 $productService->quantity = $productService->quantity - $item['quantity'];
                 $productService->save();
                 $billProduct = BillProduct::where('bill_id',$request->debit_note['bill_id'])->where('product_id',$productService->id)->first();
