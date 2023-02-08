@@ -181,14 +181,14 @@ class PaymentController extends Controller
 //                $smtp_error = __('E-Mail has been not sent due to SMTP configuration');
 //            }
 
-            //Twilio Notification
-            $setting  = Utility::settings(\Auth::user()->creatorId());
-            $vender = Vender::find($request->vender_id);
-            if(isset($setting['payment_notification']) && $setting['payment_notification'] ==1)
-            {
-                $msg = __("New payment of").' ' . \Auth::user()->priceFormat($request->amount) . __("created for").' ' . $vender->name . __("by").' '.  $payment->type . '.';
-                Utility::send_twilio_msg($vender->contact,$msg);
-            }
+//            //Twilio Notification
+//            $setting  = Utility::settings(\Auth::user()->creatorId());
+//            $vender = Vender::find($request->vender_id);
+//            if(isset($setting['payment_notification']) && $setting['payment_notification'] ==1)
+//            {
+//                $msg = __("New payment of").' ' . \Auth::user()->priceFormat($request->amount) . __("created for").' ' . $vender->name . __("by").' '.  $payment->type . '.';
+//                Utility::send_twilio_msg($vender->contact,$msg);
+//            }
 
 
             return redirect()->route('payment.index')->with('success', __('Payment successfully created.'));

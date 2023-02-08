@@ -10,6 +10,7 @@ use App\Models\BillProduct;
 use App\Models\CustomField;
 use App\Models\DebitNote;
 use App\Models\InvoiceProduct;
+use App\Models\Payment;
 use App\Models\ProductService;
 use App\Models\StockReport;
 use App\Models\Transaction;
@@ -144,21 +145,20 @@ class BillsController extends Controller
             }
 
             $bill_id = $id;
-            $billDue = Bill::where('id', $bill_id)->first();
-
-            if($request->amount > $billDue->getDue())
+            $billDue = Bill::where('bill_id', $bill_id)->first();
+            if($request->bill['allocations_attributes'][0]['amount'] > $billDue->getDue())
             {
                 return response()->json(['error'=>'Maximum ' . \Auth::user()->priceFormat($billDue->getDue()) . ' credit limit of this bill.']);
             }
             $bill               = Bill::where('bill_id', $bill_id)->first();
             $debit              = new DebitNote();
-            $debit->bill        = $bill_id;
+            $debit->bill        = $bill->id;
             $debit->vendor      = $bill->vender_id;
             $debit->date        = $request->bill['allocations_attributes'][0]['date'];
             $debit->amount      = $request->bill['allocations_attributes'][0]['amount'];
             $debit->description = "debit note";
             $debit->save();
-            Utility::userBalance('vendor', $bill->vender_id, $request->amount, 'debit');
+            Utility::userBalance('vendor', $bill->vender_id, $request->bill['allocations_attributes'][0]['amount'], 'debit');
 
             return response()->json(['debit_note'=>$debit]);
         }
@@ -186,9 +186,11 @@ class BillsController extends Controller
 
                 return response()->json(['error'=>$messages]);
             }
+
             $account = BankAccount::where('created_by',Auth::user()->id)->first();
+            $bill = Bill::where('bill_id',$request->bill_payment['bill_id'])->first();
             $billPayment                 = new BillPayment();
-            $billPayment->bill_id        = $request->bill_payment['bill_id'];
+            $billPayment->bill_id        = $bill->id;
             $billPayment->date           = $request->bill_payment['date'];
             $billPayment->amount         = $request->bill_payment['amount'];
             $billPayment->account_id     = $account->id;
@@ -196,12 +198,8 @@ class BillsController extends Controller
             $billPayment->reference      = $request->bill_payment['reference'];
             $billPayment->description    = $request->bill_payment['description'] ?? NULL;
 
-
             $billPayment->save();
-
-            $bill  = Bill::where('id', $request->bill_payment['bill_id'])->first();
             $due   = $bill->getDue();
-          //  $total = $bill->getTotal();
 
             if($bill->status == 0)
             {
@@ -228,104 +226,33 @@ class BillsController extends Controller
             $billPayment->account    = $account->id;
             Transaction::addTransaction($billPayment);
 
-            $vender = Vender::where('vender_id', $bill->vender_id)->first();
-
-            $payment         = new BillPayment();
-            $payment->name   = $vender['name'];
-            $payment->method = '-';
-            $payment->date   = \Auth::user()->dateFormat($request->bill_payment['date']);
-            $payment->amount = \Auth::user()->priceFormat($request->bill_payment['amount']);
-            $payment->bill   = 'bill ' . \Auth::user()->billNumberFormat($billPayment->bill_id);
+            // payment
+            $payment                 = new Payment();
+            $payment->date           = $request->bill_payment['date'];
+            $payment->amount         = $request->bill_payment['amount'];
+            $payment->account_id     = $account->id;
+            $payment->vender_id      = $bill->vender_id;
+            $payment->category_id    = $account->id;
+            $payment->payment_method = 0;
+            $payment->reference      = $request->bill_payment['reference'];
+            $payment->description    = $request->bill_payment['description'] ?? NULL;
+            $payment->created_by     = \Auth::user()->creatorId();
+            $payment->save();
+            //
 
             Utility::userBalance('vendor', $bill->vender_id, $request->bill_payment['amount'], 'debit');
 
             Utility::bankAccountBalance($account->id, $request->bill_payment['amount'], 'debit');
 
 
-            return response()->json(['payment'=>$payment]);
+            return response()->json(['payment'=>$billPayment]);
 
             }
 
              return response()->json(['error'=>'permission denied.'],401);
         }
 
-//    public function billReturns(Request $request , $id){
-//        $bill = Bill::where('id',$id)->first();
-//        if(!$bill){
-//            return response()->json(['error'=>"bill not found"]);
-//        }
-//        if (\Auth::user()->can('edit bill')) {
-//
-//            if ($bill->created_by == \Auth::user()->creatorId()) {
-//                $validator = \Validator::make(
-//                    $request->all(),
-//                    [
-//                        'line_items' => 'required'
-//                    ]
-//                );
-//                if ($validator->fails()) {
-//                    $messages = $validator->getMessageBag();
-//                    return response()->json(['messages'=>$messages]);
-//                }
-//              //  $bill->vender_id      = $bill->vender_id;
-//              //  $bill->bill_date      = $request->bill_date;
-//              //  $bill->due_date       = $request->due_date;
-//              //  $bill->order_number   = $request->order_number;
-////                $bill->discount_apply = isset($request->discount_apply) ? 1 : 0;
-//             //   $bill->category_id    = $request->category_id;
-//             //   $bill->save();
-//              //  CustomField::saveData($bill, $request->customField);
-//                $products = $request->line_items;
-//
-//                for ($i = 0; $i < count($products); $i++)
-//                {
-//                    $billProduct = BillProduct::find($products[$i]['id']);
-//
-//                    if ($billProduct == null)
-//                    {
-//                        $billProduct             = new BillProduct();
-//                        $billProduct->bill_id    = $bill->id;
-//
-//                        Utility::total_quantity('plus',$products[$i]['quantity'],$products[$i]['items']);
-//                    }
-//                    else{
-//
-//                        Utility::total_quantity('minus',$billProduct->quantity,$billProduct->product_id);
-//                    }
-//
-//                    if (isset($products[$i]['items'])) {
-//                        $billProduct->product_id = $products[$i]['items'];
-//                    }
-//
-//                    $billProduct->quantity    = $products[$i]['quantity'];
-//                    $billProduct->tax         = $products[$i]['tax'];
-////                    $billProduct->discount    = isset($products[$i]['discount']) ? $products[$i]['discount'] : 0;
-//                    $billProduct->price       = $products[$i]['price'];
-//                    $billProduct->description = $products[$i]['description'];
-//                    $billProduct->save();
-//
-//                    if ($products[$i]['id']>0) {
-//                        Utility::total_quantity('plus',$products[$i]['quantity'],$billProduct->product_id);
-//                    }
-//
-//                    //Product Stock Report
-//                    $type='bill';
-//                    $type_id = $bill->id;
-//                    StockReport::where('type','=','bill')->where('type_id','=',$bill->id)->delete();
-//                    $description=$products[$i]['quantity'].'  '.__(' quantity purchase in bill').' '. \Auth::user()->billNumberFormat($bill->bill_id);
-//
-//                    if(isset($products[$i]['items']) ){
-//                        Utility::addProductStock( $products[$i]['items'],$products[$i]['quantity'],$type,$description,$type_id);
-//                    }
-//                }
-//                return response()->json(['messages'=>'bill updated successfully']);
-//            } else {
-//                return response()->json(['error'=>'Permission denied.']);
-//            }
-//        } else {
-//            return response()->json(['error'=>'Permission denied.']);
-//        }
-//    }
+
 
 
     public function createDebitNote(Request $request){
