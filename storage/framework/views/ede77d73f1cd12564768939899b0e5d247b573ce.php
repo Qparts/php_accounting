@@ -270,7 +270,8 @@
                                             <?php $__currentLoopData = $iteams; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key =>$iteam): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <?php if(!empty($iteam->tax)): ?>
                                                     <?php
-                                                        $taxes=App\Models\Utility::tax($iteam->tax);
+                                                     //   $taxes=App\Models\Utility::tax($iteam->tax);
+                                                        $taxes = [];
                                                         $totalQuantity+=$iteam->quantity;
                                                         $totalRate+=$iteam->price;
                                                         $totalDiscount+=$iteam->discount;

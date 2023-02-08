@@ -287,7 +287,7 @@ class BillsController extends Controller
                     $amount=$amount + $valueTobeSubtracted;
                 }
 
-                $description = $item['description'];
+              //  $description = $item['description'];
                 $productService = ProductService::where('sku',$item['product_id'])->first();
                 $productService->quantity = $productService->quantity - $item['quantity'];
                 $productService->save();
