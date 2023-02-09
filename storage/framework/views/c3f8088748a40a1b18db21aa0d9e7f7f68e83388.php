@@ -94,10 +94,13 @@
                                                 $taxes=\App\Models\Utility::tax($productService->tax_id);
                                             ?>
 
-                                            <?php $__currentLoopData = $taxes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tax): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <span class=""><?php echo e($tax->name .' ('.$tax->rate .'%)'); ?></span><br>
 
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+
+
+
+
+
                                         <?php else: ?>
                                             -
                                         <?php endif; ?>

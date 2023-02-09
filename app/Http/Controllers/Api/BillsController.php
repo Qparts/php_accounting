@@ -274,30 +274,29 @@ class BillsController extends Controller
                 return response()->json(['messages'=> $messages]);
             }
             $billDue = Bill::where('bill_id', $request->debit_note['bill_id'])->first();
+           // dd($billDue);
             $amount = 0.0;
             // get all products related to invoice
-            $productsInBill = BillProduct::where('bill_id',$request->debit_note['bill_id'])->get(['product_id']);
+            $productsInBill = BillProduct::where('bill_id',$billDue->id)->get(['product_id']);
             $productsInBillArray = [];
             foreach($productsInBill as $pr){
                 array_push($productsInBillArray,$pr['product_id']);
             }
             foreach ($request->debit_note['line_items'] as $item){
-                if(in_array($item['product_id'],$productsInBillArray)){
+
+                $productService = ProductService::where('sku',$item['product_id'])->first();
+
+                if(in_array($productService->id,$productsInBillArray)){
                     $valueTobeSubtracted = $item['quantity']*$item['unit_price']; // number of items * price of each item
                     $amount=$amount + $valueTobeSubtracted;
                 }
 
-              //  $description = $item['description'];
-                $productService = ProductService::where('sku',$item['product_id'])->first();
-                if(!$productService){
-                    return response()->json(['messages'=> "product not found"]);
-
-                }
                 $productService->quantity = $productService->quantity - $item['quantity'];
                 $productService->save();
-                $billProduct = BillProduct::where('bill_id',$request->debit_note['bill_id'])->where('product_id',$productService->id)->first();
-                $billProduct->quantity = $item['quantity'];
+                $billProduct = BillProduct::where('bill_id',$billDue->id)->where('product_id',$productService->id)->first();
+                $billProduct->quantity = $billProduct->quantity - $item['quantity'];
                 $billProduct->price = $item['unit_price'];
+                $billProduct->tax = 1;
                 $billProduct->save();
             }
 
@@ -307,10 +306,10 @@ class BillsController extends Controller
             }
             $bill               = Bill::where('bill_id', $request->debit_note['bill_id'])->first();
             $debit              = new DebitNote();
-            $debit->bill        = $request->debit_note['bill_id'];
+            $debit->bill        = $bill->id;
             $debit->vendor      = $bill->vender_id;
             $debit->date        = $request->debit_note['issue_date'];
-            $debit->amount      = $amount;
+            $debit->amount      = 0;
             $debit->description = "";
             $debit->save();
             Utility::userBalance('vendor', $bill->vender_id, $amount, 'debit');
