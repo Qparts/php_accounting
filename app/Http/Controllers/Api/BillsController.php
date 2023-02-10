@@ -72,7 +72,7 @@ class BillsController extends Controller
                 $billProduct->bill_id     = $bill->id;
                 $billProduct->product_id  = $productBySKU->id;
                 $billProduct->quantity    = $products[$i]['quantity'];
-                $billProduct->tax         = $products[$i]['tax_percent'] ?? NULL;
+                $billProduct->tax         = 1;
                 $billProduct->discount    = $products[$i]['discount'];
                 $billProduct->price       = $products[$i]['unit_price'];
                 $billProduct->description = $products[$i]['description'];
