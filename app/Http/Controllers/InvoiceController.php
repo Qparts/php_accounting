@@ -155,8 +155,8 @@ class InvoiceController extends Controller
                 $invoiceProduct->invoice_id  = $invoice->id;
                 $invoiceProduct->product_id  = $products[$i]['item'];
                 $invoiceProduct->quantity    = $products[$i]['quantity'];
-                $invoiceProduct->tax         = $products[$i]['tax'];
-//                $invoiceProduct->discount    = isset($products[$i]['discount']) ? $products[$i]['discount'] : 0;
+               // $invoiceProduct->tax         = $products[$i]['tax'];
+                $invoiceProduct->tax         = 1;
                 $invoiceProduct->discount    = $products[$i]['discount'];
                 $invoiceProduct->price       = $products[$i]['price'];
                 $invoiceProduct->description = $products[$i]['description'];

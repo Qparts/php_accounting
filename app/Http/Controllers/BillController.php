@@ -125,7 +125,8 @@ class BillController extends Controller
                 $billProduct->bill_id     = $bill->id;
                 $billProduct->product_id  = $products[$i]['item'];
                 $billProduct->quantity    = $products[$i]['quantity'];
-                $billProduct->tax         = $products[$i]['tax'];
+              //  $billProduct->tax         = $products[$i]['tax'];
+                $billProduct->tax         = 1;
 //                $billProduct->discount    = isset($products[$i]['discount']) ? $products[$i]['discount'] : 0;
                 $billProduct->discount    = $products[$i]['discount'];
                 $billProduct->price       = $products[$i]['price'];
