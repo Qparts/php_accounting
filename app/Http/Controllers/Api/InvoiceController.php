@@ -119,6 +119,7 @@ class InvoiceController extends Controller
                 return $this->error("invoice not found",404);
 
             }
+
             $bankAccount = BankAccount::where('created_by',Auth::user()->id)->first();
 
             $revenue                 = new Revenue();
@@ -146,10 +147,12 @@ class InvoiceController extends Controller
 
             $customer         = Customer::where('customer_id', $invoice->customer_id)->first();
             $payment          = new InvoicePayment();
-            $payment->name    = !empty($customer) ? $customer['name'] : '';
-            $payment->date    = \Auth::user()->dateFormat($request->invoice_payment['date']);
-            $payment->amount  = \Auth::user()->priceFormat($request->invoice_payment['amount']);
-            $payment->invoice = $request->invoice_payment['reference'];
+            $payment->date    = date('Y-m-d');
+            $payment->amount  = $request->invoice_payment['amount'];
+            $payment->invoice_id = $invoice->id;
+            $payment->reference = $request->invoice_payment['reference'];
+            $payment->save();
+
 
             if(!empty($customer))
             {
