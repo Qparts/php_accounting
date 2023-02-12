@@ -153,6 +153,15 @@ class InvoiceController extends Controller
             $payment->reference = $request->invoice_payment['reference'];
             $payment->save();
 
+            $credit              = new CreditNote();
+            //   $credit->invoice     = $request->credit_note['invoice_id'];
+            $credit->invoice     = $invoice->id;
+            $credit->customer    = $invoice->customer_id;
+            $credit->date        = $request->invoice_payment['date'];
+            $credit->amount      = $request->invoice_payment['amount'];
+            $credit->description = $description ?? " ";
+            $credit->save();
+
 
             if(!empty($customer))
             {
