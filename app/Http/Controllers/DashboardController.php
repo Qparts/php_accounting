@@ -151,22 +151,28 @@ class DashboardController extends Controller
             }
             else
             {
-                $settings = Utility::settings();
-                if($settings['display_landing_page'] == 'on')
-                {
+                return redirect('login');
 
-
-                    return view('layouts.landing', compact('settings'));
-                }
-                else
-                {
-                    return redirect('login');
-                }
+//                $settings = Utility::settings();
+//                if($settings['display_landing_page'] == 'on')
+//                {
+//
+//
+//                    return view('layouts.landing', compact('settings'));
+//                }
+//                else
+//                {
+//                    return redirect('login');
+//                }
 
             }
         }
     }
 
+    public function account_dashboard_index_login()
+    {
+        return redirect('login');
+    }
     public function project_dashboard_index()
     {
         $user = Auth::user();
