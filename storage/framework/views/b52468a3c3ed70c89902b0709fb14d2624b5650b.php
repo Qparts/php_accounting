@@ -107,10 +107,10 @@ unset($__errorArgs, $__bag); ?>
         <div class="d-grid">
             <button type="submit" class="btn-login btn btn-primary btn-block mt-2" id="login_button"><?php echo e(__('Login')); ?></button>
         </div>
-        <?php if($settings['enable_signup'] == 'on'): ?>
 
-        <p class="my-4 text-center"><?php echo e(__("Don't have an account?")); ?> <a href="<?php echo e(route('register',!empty(\Auth::user()->lang)?\Auth::user()->lang:'en')); ?>" class="text-primary"><?php echo e(__('Register')); ?></a></p>
-        <?php endif; ?>
+
+
+
 
     </div>
     <?php echo e(Form::close()); ?>

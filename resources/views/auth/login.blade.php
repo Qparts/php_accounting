@@ -69,10 +69,10 @@
         <div class="d-grid">
             <button type="submit" class="btn-login btn btn-primary btn-block mt-2" id="login_button">{{__('Login')}}</button>
         </div>
-        @if($settings['enable_signup'] == 'on')
+{{--        @if($settings['enable_signup'] == 'on')--}}
 
-        <p class="my-4 text-center">{{__("Don't have an account?")}} <a href="{{ route('register',!empty(\Auth::user()->lang)?\Auth::user()->lang:'en') }}" class="text-primary">{{__('Register')}}</a></p>
-        @endif
+{{--        <p class="my-4 text-center">{{__("Don't have an account?")}} <a href="{{ route('register',!empty(\Auth::user()->lang)?\Auth::user()->lang:'en') }}" class="text-primary">{{__('Register')}}</a></p>--}}
+{{--        @endif--}}
 
     </div>
     {{Form::close()}}

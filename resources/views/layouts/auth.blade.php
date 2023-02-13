@@ -129,12 +129,6 @@
         <div class="auth-footer">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-6">
-                        <p class="">
-                            {{(Utility::getValByName('footer_text')) ? Utility::getValByName('footer_text') :  __('Copyright ERPGO') }} {{ date('Y') }}
-                        </p>
-                    </div>
-
                 </div>
             </div>
         </div>
