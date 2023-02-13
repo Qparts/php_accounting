@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 @php
-   // $profile=asset(Storage::url('uploads/avatar/'));
-    $profile=\App\Models\Utility::get_file('uploads/avatar');
+       // $profile=asset(Storage::url('uploads/avatar/'));
+        $profile=\App\Models\Utility::get_file('uploads/avatar');
 @endphp
 @section('page-title')
     {{__('Manage User')}}
@@ -12,6 +12,7 @@
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{route('dashboard')}}">{{__('Dashboard')}}</a></li>
     <li class="breadcrumb-item">{{__('User')}}</li>
+
 @endsection
 @section('action-btn')
     <div class="float-end">
@@ -21,6 +22,18 @@
     </div>
 @endsection
 @section('content')
+    @if(session('token'))
+    <div class="row">
+        <div style="border: 1px solid darkgreen;padding: 10px;margin: 5px;">
+
+                <h4>token : {{session('token')}}</h4>
+
+        </div>
+        <div>
+            <p>* you will not be able to see this token again after refreshing the page</p>
+        </div>
+    @endif
+    </div>
     <div class="row">
         <div class="col-xxl-12">
             <div class="row">

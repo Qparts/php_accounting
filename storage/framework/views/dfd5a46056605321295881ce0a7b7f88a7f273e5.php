@@ -1,6 +1,6 @@
 <?php
-   // $profile=asset(Storage::url('uploads/avatar/'));
-    $profile=\App\Models\Utility::get_file('uploads/avatar');
+       // $profile=asset(Storage::url('uploads/avatar/'));
+        $profile=\App\Models\Utility::get_file('uploads/avatar');
 ?>
 <?php $__env->startSection('page-title'); ?>
     <?php echo e(__('Manage User')); ?>
@@ -12,6 +12,7 @@
 <?php $__env->startSection('breadcrumb'); ?>
     <li class="breadcrumb-item"><a href="<?php echo e(route('dashboard')); ?>"><?php echo e(__('Dashboard')); ?></a></li>
     <li class="breadcrumb-item"><?php echo e(__('User')); ?></li>
+
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('action-btn'); ?>
     <div class="float-end">
@@ -21,6 +22,18 @@
     </div>
 <?php $__env->stopSection(); ?>
 <?php $__env->startSection('content'); ?>
+    <?php if(session('token')): ?>
+    <div class="row">
+        <div style="border: 1px solid darkgreen;padding: 10px;margin: 5px;">
+
+                <h4>token : <?php echo e(session('token')); ?></h4>
+
+        </div>
+        <div>
+            <p>* you will not be able to see this token again after refreshing the page</p>
+        </div>
+    <?php endif; ?>
+    </div>
     <div class="row">
         <div class="col-xxl-12">
             <div class="row">

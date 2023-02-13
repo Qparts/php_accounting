@@ -83,6 +83,7 @@ class UserController extends Controller
                                        'password' => 'required|min:6',
                                    ]
                 );
+
                 if($validator->fails())
                 {
                     $messages = $validator->getMessageBag();
@@ -179,12 +180,17 @@ class UserController extends Controller
                     'email' => $user->email,
                     'password' => $user->password,
                 ];
-                $resp = Utility::sendEmailTemplate('new_user', [$user->id => $user->email], $userArr);
+              //  $resp = Utility::sendEmailTemplate('new_user', [$user->id => $user->email], $userArr);
 
+                $token = $user->createToken('API Token')->plainTextToken;
+            //    return redirect()->route('users.index',['token' =>  $token])->with('success', __('User successfully created.') . "token : " .$token  . ((!empty($resp) && $resp['is_success'] == false && !empty($resp['error'])) ? '<br> <span class="text-danger">' . $resp['error'] . '</span>' : ''));
+                return redirect()->route('users.index')
+                   ->with('success', __('User successfully created.'))
+                    ->with('token',  $token );
 
-                return redirect()->route('users.index')->with('success', __('User successfully created.') . ((!empty($resp) && $resp['is_success'] == false && !empty($resp['error'])) ? '<br> <span class="text-danger">' . $resp['error'] . '</span>' : ''));
             }
             return redirect()->route('users.index')->with('success', __('User successfully created.'));
+
 
         }
         else
