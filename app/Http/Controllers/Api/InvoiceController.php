@@ -47,7 +47,7 @@ class InvoiceController extends Controller
                 return $this->error($messages,409);
             }
 
-            $invoiceExists = Invoice::where('bill_id',$request->invoice['reference'])->first();
+            $invoiceExists = Invoice::where('invoice_id',$request->invoice['reference'])->first();
             if($invoiceExists){
                 return response()->json(['error'=>"invoice already exists"]);
             }
