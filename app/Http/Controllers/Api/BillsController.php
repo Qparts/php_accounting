@@ -45,7 +45,7 @@ class BillsController extends Controller
             }
             $billExists = Bill::where('bill_id',$request->bill['bill_id'])->first();
             if($billExists){
-                return response()->json(['error'=>"bill already exists"]);
+                return response()->json(['error'=>"bill already exists"],409);
             }
             $bill            = new Bill();
             $bill->bill_id   = $request->bill['bill_id'];

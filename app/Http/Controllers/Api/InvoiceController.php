@@ -49,7 +49,7 @@ class InvoiceController extends Controller
 
             $invoiceExists = Invoice::where('invoice_id',$request->invoice['reference'])->first();
             if($invoiceExists){
-                return response()->json(['error'=>"invoice already exists"]);
+                return response()->json(['error'=>"invoice already exists"],409);
             }
             $invoice                 = new Invoice();
             $invoice->invoice_id     = $request->invoice['reference'];
