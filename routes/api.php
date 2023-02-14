@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\BankAccountController;
 use App\Http\Controllers\Api\BillsController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\InventoryController;
@@ -87,5 +88,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
   //  Route::put('bill/{id}/update',[BillsController::clavendor-billss,'billReturns']); //TODO to be removed
 
     Route::post('purchases/debit-note', [BillsController::class, 'createDebitNote']);
+
+
+    // bank account
+
+    Route::post('bank-account', [BankAccountController::class, 'store']);
+    Route::get('bank-account', [BankAccountController::class, 'list']);
+    Route::post('bank-account/add', [BankAccountController::class, 'addMoneyToBankAccount']);
 
 });
