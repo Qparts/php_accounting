@@ -129,13 +129,6 @@
         <div class="auth-footer">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-6">
-                        <p class="">
-                            <?php echo e((Utility::getValByName('footer_text')) ? Utility::getValByName('footer_text') :  __('Copyright ERPGO')); ?> <?php echo e(date('Y')); ?>
-
-                        </p>
-                    </div>
-
                 </div>
             </div>
         </div>
