@@ -1473,57 +1473,57 @@ class SystemController extends Controller
 
     }
 
-    public function offerletterupdate($lang, Request $request)
-    {
-        $user = GenerateOfferLetter::updateOrCreate(['lang' =>$lang,'created_by' =>  \Auth::user()->id],['content' => $request->content]);
-
-        return response()->json(
-            [
-                'is_success' => true,
-                'success' => __('Offer Letter successfully saved!'),
-            ], 200
-        );
-
-    }
-    public function joiningletterupdate($lang, Request $request)
-    {
-
-        $user = JoiningLetter::updateOrCreate(['lang' =>$lang,'created_by' =>  \Auth::user()->id],['content' => $request->content]);
-
-        return response()->json(
-            [
-                'is_success' => true,
-                'success' => __('Joing Letter successfully saved!'),
-            ], 200
-        );
-
-    }
-    public function experienceCertificateupdate($lang, Request $request)
-    {
-        //   dd($request->all());
-        $user = ExperienceCertificate::updateOrCreate(['lang' =>$lang,'created_by' =>  \Auth::user()->id],['content' => $request->content]);
-
-        return response()->json(
-            [
-                'is_success' => true,
-                'success' => __('Experience Certificate successfully saved!'),
-            ], 200
-        );
-
-    }
-    public function NOCupdate($lang, Request $request)
-    {
-        //   dd($request->all());
-        $user = NOC::updateOrCreate(['lang' =>   $lang,'created_by' =>  \Auth::user()->id],['content' => $request->content]);
-
-        return response()->json(
-            [
-                'is_success' => true,
-                'success' => __('NOC successfully saved!'),
-            ], 200
-        );
-
-    }
+//    public function offerletterupdate($lang, Request $request)
+//    {
+//        $user = GenerateOfferLetter::updateOrCreate(['lang' =>$lang,'created_by' =>  \Auth::user()->id],['content' => $request->content]);
+//
+//        return response()->json(
+//            [
+//                'is_success' => true,
+//                'success' => __('Offer Letter successfully saved!'),
+//            ], 200
+//        );
+//
+//    }
+//    public function joiningletterupdate($lang, Request $request)
+//    {
+//
+//        $user = JoiningLetter::updateOrCreate(['lang' =>$lang,'created_by' =>  \Auth::user()->id],['content' => $request->content]);
+//
+//        return response()->json(
+//            [
+//                'is_success' => true,
+//                'success' => __('Joing Letter successfully saved!'),
+//            ], 200
+//        );
+//
+//    }
+//    public function experienceCertificateupdate($lang, Request $request)
+//    {
+//        //   dd($request->all());
+//        $user = ExperienceCertificate::updateOrCreate(['lang' =>$lang,'created_by' =>  \Auth::user()->id],['content' => $request->content]);
+//
+//        return response()->json(
+//            [
+//                'is_success' => true,
+//                'success' => __('Experience Certificate successfully saved!'),
+//            ], 200
+//        );
+//
+//    }
+//    public function NOCupdate($lang, Request $request)
+//    {
+//        //   dd($request->all());
+//        $user = NOC::updateOrCreate(['lang' =>   $lang,'created_by' =>  \Auth::user()->id],['content' => $request->content]);
+//
+//        return response()->json(
+//            [
+//                'is_success' => true,
+//                'success' => __('NOC successfully saved!'),
+//            ], 200
+//        );
+//
+//    }
 
 
 }
