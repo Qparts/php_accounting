@@ -9,6 +9,7 @@
 @push('script-page')
 
 @endpush
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{route('dashboard')}}">{{__('Dashboard')}}</a></li>
     <li class="breadcrumb-item">{{__('User')}}</li>
@@ -118,6 +119,17 @@
                                                 <a href="#" data-url="{{ route('plan.upgrade',$user->id) }}" data-size="lg" data-ajax-popup="true" class="btn btn-outline-primary"
                                                    data-title="{{__('Upgrade Plan')}}">{{__('Upgrade Plan')}}</a>
                                             </div>
+
+                                            <div class="col-12">
+                                                <hr class="my-3">
+                                            </div>
+                                            <div class="col-12 ">
+                                                  <span class="d-block font-bold mb-0">
+{{--                                                    <button class="btn btn-outline-primary test_button" value="{{$user->id}}">generate token</button>--}}
+                                                    <button class="btn btn-outline-primary test_button" value="{{$user->id}}">generate token</button>
+                                                </span>
+                                            </div>
+
                                             <div class="col-12">
                                                 <hr class="my-3">
                                             </div>
@@ -161,4 +173,37 @@
             </div>
         </div>
     </div>
+
 @endsection
+<script>
+
+    $(function() {
+        $(".test_button").click( function()
+            {
+                var userId = $(this).val();
+                 var getUrl = window.location;
+                 var url = getUrl.host;
+                var baseUrl ="";
+                if(url.includes("localhost")){
+                     baseUrl = getUrl .protocol + "//" + getUrl.host + '/erp/api/get-token/'
+                }else{
+                     baseUrl = getUrl .protocol + "//" + getUrl.host + '/api/get-token/'
+                }
+                $.ajax({
+                    type: "GET",
+                    url: baseUrl +userId,
+                    success: function(msg){
+                        alert( msg );
+                    }
+                })
+            }
+        );
+    });
+
+    function RemoveLastDirectoryPartOf(the_url)
+    {
+        var the_arr = the_url.split('/');
+        the_arr.pop();
+        return( the_arr.join('/') );
+    }
+</script>

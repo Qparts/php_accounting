@@ -96,4 +96,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('bank-account', [BankAccountController::class, 'list']);
     Route::post('bank-account/add', [BankAccountController::class, 'addMoneyToBankAccount']);
 
+
+
 });
+route::get('get-token/{id}', [ApiController::class, 'generateTokenForUser']);
