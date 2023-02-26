@@ -275,4 +275,9 @@ class ApiController extends Controller
         return "updated";
     }
 
+    public function generateTokenForUser($id){
+        $user = User::where('id',$id)->first();
+        return  $user->createToken('API Token')->plainTextToken;
+    }
+
 }

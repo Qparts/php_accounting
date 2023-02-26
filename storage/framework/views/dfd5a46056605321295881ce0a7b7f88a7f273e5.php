@@ -9,6 +9,7 @@
 <?php $__env->startPush('script-page'); ?>
 
 <?php $__env->stopPush(); ?>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 <?php $__env->startSection('breadcrumb'); ?>
     <li class="breadcrumb-item"><a href="<?php echo e(route('dashboard')); ?>"><?php echo e(__('Dashboard')); ?></a></li>
     <li class="breadcrumb-item"><?php echo e(__('User')); ?></li>
@@ -122,6 +123,17 @@
                                                 <a href="#" data-url="<?php echo e(route('plan.upgrade',$user->id)); ?>" data-size="lg" data-ajax-popup="true" class="btn btn-outline-primary"
                                                    data-title="<?php echo e(__('Upgrade Plan')); ?>"><?php echo e(__('Upgrade Plan')); ?></a>
                                             </div>
+
+                                            <div class="col-12">
+                                                <hr class="my-3">
+                                            </div>
+                                            <div class="col-12 ">
+                                                  <span class="d-block font-bold mb-0">
+
+                                                    <button class="btn btn-outline-primary test_button" value="<?php echo e($user->id); ?>">generate token</button>
+                                                </span>
+                                            </div>
+
                                             <div class="col-12">
                                                 <hr class="my-3">
                                             </div>
@@ -165,6 +177,39 @@
             </div>
         </div>
     </div>
+
 <?php $__env->stopSection(); ?>
+<script>
+
+    $(function() {
+        $(".test_button").click( function()
+            {
+                var userId = $(this).val();
+                 var getUrl = window.location;
+                 var url = getUrl.host;
+                var baseUrl ="";
+                if(url.includes("localhost")){
+                     baseUrl = getUrl .protocol + "//" + getUrl.host + '/erp/api/get-token/'
+                }else{
+                     baseUrl = getUrl .protocol + "//" + getUrl.host + '/api/get-token/'
+                }
+                $.ajax({
+                    type: "GET",
+                    url: baseUrl +userId,
+                    success: function(msg){
+                        alert( msg );
+                    }
+                })
+            }
+        );
+    });
+
+    function RemoveLastDirectoryPartOf(the_url)
+    {
+        var the_arr = the_url.split('/');
+        the_arr.pop();
+        return( the_arr.join('/') );
+    }
+</script>
 
 <?php echo $__env->make('layouts.admin', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Applications/MAMP/htdocs/erp/resources/views/user/index.blade.php ENDPATH**/ ?>
