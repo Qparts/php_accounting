@@ -28,13 +28,16 @@
         <div style="border: 1px solid darkgreen;padding: 10px;margin: 5px;">
 
                 <h4>token : <?php echo e(session('token')); ?></h4>
-
         </div>
         <div>
             <p>* you will not be able to see this token again after refreshing the page</p>
         </div>
-    <?php endif; ?>
     </div>
+    <?php endif; ?>
+    <div style="border: 1px solid darkgreen;padding: 10px;margin: 5px;">
+        <h4 id="token_id"></h4>
+    </div>
+
     <div class="row">
         <div class="col-xxl-12">
             <div class="row">
@@ -129,7 +132,6 @@
                                             </div>
                                             <div class="col-12 ">
                                                   <span class="d-block font-bold mb-0">
-
                                                     <button class="btn btn-outline-primary test_button" value="<?php echo e($user->id); ?>">generate token</button>
                                                 </span>
                                             </div>
@@ -197,19 +199,12 @@
                     type: "GET",
                     url: baseUrl +userId,
                     success: function(msg){
-                        alert( msg );
+                        $("#token_id").text(msg);
                     }
                 })
             }
         );
     });
-
-    function RemoveLastDirectoryPartOf(the_url)
-    {
-        var the_arr = the_url.split('/');
-        the_arr.pop();
-        return( the_arr.join('/') );
-    }
 </script>
 
 <?php echo $__env->make('layouts.admin', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Applications/MAMP/htdocs/erp/resources/views/user/index.blade.php ENDPATH**/ ?>
