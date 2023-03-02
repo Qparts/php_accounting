@@ -9,7 +9,8 @@
        $logo_light = \App\Models\Utility::getValByName('company_logo_light');
        $logo_dark = \App\Models\Utility::getValByName('company_logo_dark');
        $logo = request()->getSchemeAndHttpHost() . '/storage/uploads/logo';
-       dd(request()->getSchemeAndHttpHost().'/erp/storage/uploads/logo/'.$logo_dark);
+     //  dd(request()->getSchemeAndHttpHost().'/erp/storage/uploads/logo/'.$logo_dark);
+     dd(asset('storage/uploads/logo/'.$logo_dark));
        // dd($logo."/");
        $company_favicon = \App\Models\Utility::getValByName('company_favicon');
        $setting = \App\Models\Utility::colorset();
